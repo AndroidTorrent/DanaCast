@@ -152,9 +152,8 @@ public class ContentUtils {
         MediaInfo mSelectedMedia = new MediaInfo.Builder(url)
                 .setContentType((type == Constants.TYPE_SONG ? "audio/" : "video/") +
                         FilenameUtils.getExtension(url))
-                .setStreamType(type == Constants.TYPE_TORRENT || type == Constants.TYPE_FILE
-                        || type == Constants.TYPE_LIVE ? MediaInfo.STREAM_TYPE_LIVE
-                        : MediaInfo.STREAM_TYPE_BUFFERED)
+                .setStreamType(type == Constants.TYPE_TORRENT || type == Constants.TYPE_LIVE ?
+                        MediaInfo.STREAM_TYPE_LIVE : MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(mediaMetadata)
                 .build();
         VideoCastManager.getInstance().startVideoCastControllerActivity(context, mSelectedMedia, 0, true);
