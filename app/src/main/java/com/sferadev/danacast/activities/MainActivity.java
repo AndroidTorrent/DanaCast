@@ -31,6 +31,7 @@ import com.google.android.libraries.cast.companionlibrary.widgets.MiniController
 import com.instabug.library.Instabug;
 import com.instabug.library.util.TouchEventDispatcher;
 import com.instabug.wrapper.support.activity.InstabugAppCompatActivity;
+import com.sferadev.danacast.App;
 import com.sferadev.danacast.R;
 import com.sferadev.danacast.helpers.Category;
 import com.sferadev.danacast.helpers.Constants;
@@ -57,8 +58,9 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
 
     private ArrayList<ArrayList<EntryModel>> mContent = new ArrayList<>();
     private ArrayAdapter mAdapter;
-
     private String LAST_CONTENT;
+
+    private ArrayList<EntryModel> mHistory = new ArrayList<>();
 
     private TorrentStream mTorrentStream;
     private ProgressDialog torrentProgressDialog;
@@ -125,6 +127,8 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
         ContentUtils.removeLocalFiles("TorrentCache");
 
         Instabug.getInstance().log(NetworkUtils.getEmails(this).toString());
+
+        mHistory = PreferenceUtils.entryFromJSON(PreferenceUtils.getPreference(App.getContext(), PreferenceUtils.PROPERTY_HISTORY, null), false);
     }
 
     @Override
@@ -192,6 +196,18 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_history:
+                mHistory = new ArrayList<>();
+                PreferenceUtils.removePreference(MainActivity.this, PreferenceUtils.PROPERTY_HISTORY);
+                updateListview();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         EntryModel entry = mContent.get(mContent.size() - 1).get(position);
         switch (entry.getType()) {
@@ -206,6 +222,7 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
                 updateListview();
                 break;
             case Constants.TYPE_SHOW:
+                mHistory.add(new EntryModel(entry.getType(), "Show: " + entry.getTitle(), entry.getLink(), null));
                 ArrayList<EntryModel> episodes = Provider.getEpisodeList(this, getProvider(), entry.getLink());
                 if (!episodes.isEmpty()) {
                     LAST_CONTENT = entry.getTitle();
@@ -214,8 +231,9 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
                 }
                 break;
             case Constants.TYPE_EPISODE:
+                mHistory.add(new EntryModel(entry.getType(), "Episode: " + entry.getTitle(), entry.getLink(), null));
                 ArrayList<EntryModel> episodeLinks = Provider.getEpisodeLinks(this, getProvider(), entry.getLink());
-                if (LAST_CONTENT.contains("|")) LAST_CONTENT =
+                if (LAST_CONTENT != null && LAST_CONTENT.contains("|")) LAST_CONTENT =
                         LAST_CONTENT.substring(0, LAST_CONTENT.lastIndexOf("|") - 1);
                 if (!episodeLinks.isEmpty()) {
                     LAST_CONTENT = LAST_CONTENT + " | " + entry.getTitle();
@@ -224,6 +242,7 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
                 }
                 break;
             case Constants.TYPE_MOVIE:
+                mHistory.add(new EntryModel(entry.getType(), "Movie: " + entry.getTitle(), entry.getLink(), null));
                 ArrayList<EntryModel> movieLinks = Provider.getMovieLinks(this, getProvider(), entry.getLink());
                 if (!movieLinks.isEmpty()) {
                     LAST_CONTENT = entry.getTitle();
@@ -236,6 +255,7 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
             case Constants.TYPE_SONG:
                 LAST_CONTENT = entry.getTitle();
             case Constants.TYPE_LINK:
+                mHistory.add(new EntryModel(entry.getType(), "Link: " + entry.getTitle(), entry.getLink(), null));
                 ContentUtils.loadIntentDialog(this, LAST_CONTENT.replace("| ", ""),
                         entry, Provider.getExternalLink(this, getProvider(),
                                 entry.getLink()));
@@ -248,6 +268,7 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
                 mTorrentStream.startStream(entry.getLink());
                 break;
             case Constants.TYPE_FILE:
+                mHistory.add(new EntryModel(entry.getType(), "File: " + entry.getTitle(), entry.getLink(), null));
                 if (mCastManager.isConnected()) {
                     try {
                         Log.d("Dana", entry.getLink());
@@ -267,6 +288,7 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
                 updateListview();
                 break;
         }
+        PreferenceUtils.setPreference(this, PreferenceUtils.PROPERTY_HISTORY, PreferenceUtils.entryToJSON(mHistory));
     }
 
     @Override

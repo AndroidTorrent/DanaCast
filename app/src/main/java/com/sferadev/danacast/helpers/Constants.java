@@ -20,7 +20,8 @@ public class Constants {
     public static final int CATEGORY_MUSIC = 3;
     public static final int CATEGORY_LIVE = 4;
     public static final int CATEGORY_FILES = 5;
-    public static final int CATEGORY_ABOUT = 6;
+    public static final int CATEGORY_HISTORY = 6;
+    public static final int CATEGORY_ABOUT = 7;
 
     public static final int ABOUT_GOOGLE_PLUS = 0;
     public static final int ABOUT_PAYPAL = 1;
