@@ -42,4 +42,5 @@ dependencies {
     compile 'com.nanohttpd:nanohttpd:2.1.1'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
     compile 'com.instabug.library:instabugsupport:1+'
+    compile 'com.google.code.gson:gson:2.3.1'
 }
