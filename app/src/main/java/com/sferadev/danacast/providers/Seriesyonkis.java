@@ -123,7 +123,7 @@ public class Seriesyonkis {
                         String language = element.getElementsByClass("flags").first().attr("title");
                         result.add(new EntryModel(Constants.TYPE_LINK, title + " (" + language + ")", linkUrl, null));
                     }
-                } catch (IOException e) {
+                } catch (NullPointerException | IOException e) {
                     e.printStackTrace();
                 }
             }
