@@ -202,6 +202,7 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
             case R.id.action_history:
                 mHistory = new ArrayList<>();
                 PreferenceUtils.removePreference(MainActivity.this, PreferenceUtils.PROPERTY_HISTORY);
+                mContent.add(History.historyCategories());
                 updateListview();
                 return true;
         }
