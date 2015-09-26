@@ -13,6 +13,7 @@ public class Constants {
     public static final int TYPE_LIVE = 9;
     public static final int TYPE_FILE = 10;
     public static final int TYPE_FOLDER = 11;
+    public static final int TYPE_HISTORY = 12;
 
     public static final int CATEGORY_SHOWS = 0;
     public static final int CATEGORY_MOVIES = 1;
@@ -22,6 +23,12 @@ public class Constants {
     public static final int CATEGORY_FILES = 5;
     public static final int CATEGORY_HISTORY = 6;
     public static final int CATEGORY_ABOUT = 7;
+
+    public static final int HISTORY_TV_SHOWS = 0;
+    public static final int HISTORY_EPISODES = 1;
+    public static final int HISTORY_MOVIES = 2;
+    public static final int HISTORY_LINKS = 3;
+    public static final int HISTORY_FILES = 4;
 
     public static final int ABOUT_GOOGLE_PLUS = 0;
     public static final int ABOUT_PAYPAL = 1;
