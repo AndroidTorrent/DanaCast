@@ -9,12 +9,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,9 +28,6 @@ import com.github.sv244.torrentstream.listeners.TorrentListener;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
-import com.instabug.library.Instabug;
-import com.instabug.library.util.TouchEventDispatcher;
-import com.instabug.wrapper.support.activity.InstabugAppCompatActivity;
 import com.sferadev.danacast.App;
 import com.sferadev.danacast.R;
 import com.sferadev.danacast.helpers.Category;
@@ -49,7 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends InstabugAppCompatActivity implements AdapterView.OnItemClickListener,
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, TorrentListener {
 
     private VideoCastManager mCastManager;
@@ -61,12 +58,10 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
     private ArrayAdapter mAdapter;
     private String LAST_CONTENT;
 
-    private ArrayList<EntryModel> mHistory = new ArrayList<>();
+    public static ArrayList<EntryModel> mHistory = new ArrayList<>();
 
     private TorrentStream mTorrentStream;
     private ProgressDialog torrentProgressDialog;
-
-    private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +122,6 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
 
         ContentUtils.removeLocalFiles("TorrentCache");
 
-        Instabug.getInstance().log(NetworkUtils.getEmails(this).toString());
-
         mHistory = History.entryFromJSON(PreferenceUtils.getPreference(App.getContext(), PreferenceUtils.PROPERTY_HISTORY, null), false);
     }
 
@@ -174,12 +167,6 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
                 updateListview();
             }
         }, 2000);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        dispatcher.dispatchTouchEvent(this, ev);
-        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -262,7 +249,6 @@ public class MainActivity extends InstabugAppCompatActivity implements AdapterVi
                 LAST_CONTENT = entry.getTitle();
             case Constants.TYPE_LINK:
                 entry.setTitle(entry.getTitle() + ": " + LAST_CONTENT.replace("| ", ""));
-                mHistory.add(entry);
                 ContentUtils.loadIntentDialog(this, entry.getTitle(),
                         entry, Provider.getExternalLink(this, getProvider(),
                                 entry.getLink()));

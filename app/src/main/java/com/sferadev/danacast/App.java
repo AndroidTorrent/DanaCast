@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
-import com.instabug.library.Instabug;
 
 public class App extends Application {
 
@@ -25,10 +24,6 @@ public class App extends Application {
                         VideoCastManager.FEATURE_LOCKSCREEN |
                         VideoCastManager.FEATURE_WIFI_RECONNECT |
                         VideoCastManager.FEATURE_DEBUGGING);
-
-        Instabug.initialize(this, "9491098bea83ae038a065edf7284ecee")
-                .setIsTrackingUserSteps(true)
-                .setIsTrackingCrashes(true);
     }
 
 }
