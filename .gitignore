@@ -5,3 +5,15 @@
 .DS_Store
 /build
 /captures
+
+#Other files
+project.properties
+proguard.cfg
+gradlew
+gradlew.bat
+LICENSE
+README.md
+CastCompanionLibrary.pdf
+CONTRIBUTING.md
+gradle-wrapper.jar
+gradle-wrapper.properties
