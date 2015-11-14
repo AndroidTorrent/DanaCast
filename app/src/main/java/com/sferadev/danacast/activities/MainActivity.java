@@ -199,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         EntryModel entry = mContent.get(mContent.size() - 1).get(position);
+        LAST_CONTENT = "";
         switch (entry.getType()) {
             case Constants.TYPE_CATEGORY:
                 mContent.add(Category.getProviders(position));
@@ -245,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case Constants.TYPE_SONG:
                 LAST_CONTENT = entry.getTitle();
             case Constants.TYPE_LINK:
-                entry.setTitle(entry.getTitle() + ": " + LAST_CONTENT.replace("| ", ""));
+                entry.setTitle(LAST_CONTENT.replace("| ", ""));
                 ContentUtils.loadIntentDialog(this, entry.getTitle(),
                         entry, Provider.getExternalLink(this, getProvider(),
                                 entry.getLink()));
