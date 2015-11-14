@@ -17,7 +17,6 @@
         <item>Movies</item>
         <item>Anime</item>
         <item>Music</item>
-        <item>Live (WIP)</item>
         <item>Local Files</item>
         <item>History</item>
         <item>About</item>
@@ -35,8 +34,6 @@
         <item>JKAnime</item>
         <item>Music163</item>
         <item>Soundcloud</item>
-        <item>Radio Stations</item>
-        <item>TV Channels</item>
     </string-array>
 
     <string-array name="history_names">

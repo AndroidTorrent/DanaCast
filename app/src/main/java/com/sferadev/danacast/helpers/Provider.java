@@ -5,8 +5,6 @@ import android.content.Context;
 import com.sferadev.danacast.models.EntryModel;
 import com.sferadev.danacast.providers.Gnula;
 import com.sferadev.danacast.providers.Jkanime;
-import com.sferadev.danacast.providers.LiveChannels;
-import com.sferadev.danacast.providers.LiveStations;
 import com.sferadev.danacast.providers.Music163;
 import com.sferadev.danacast.providers.Pordede;
 import com.sferadev.danacast.providers.Seriesblanco;
@@ -46,10 +44,6 @@ public class Provider {
                 return Music163.getSearchResults(query);
             case Constants.PROVIDER_SOUNDCLOUD:
                 return Soundcloud.getSearchResults(query);
-            case Constants.PROVIDER_LIVE_STATIONS:
-                return LiveStations.getSearchResults(query);
-            case Constants.PROVIDER_LIVE_CHANNELS:
-                return LiveChannels.getSearchResults(query);
         }
         return Category.getCategories();
     }
@@ -86,10 +80,6 @@ public class Provider {
                 return Music163.getPopularContent();
             case Constants.PROVIDER_SOUNDCLOUD:
                 return Soundcloud.getPopularContent();
-            case Constants.PROVIDER_LIVE_STATIONS:
-                return LiveStations.getPopularContent();
-            case Constants.PROVIDER_LIVE_CHANNELS:
-                return LiveChannels.getPopularContent();
         }
         return Category.getCategories();
     }
@@ -179,10 +169,6 @@ public class Provider {
                 return Music163.getExternalLink(url);
             case Constants.PROVIDER_SOUNDCLOUD:
                 return Soundcloud.getExternalLink(url);
-            case Constants.PROVIDER_LIVE_STATIONS:
-                return LiveStations.getExternalLink(url);
-            case Constants.PROVIDER_LIVE_CHANNELS:
-                return LiveChannels.getExternalLink(url);
         }
         return null;
     }

@@ -19,10 +19,9 @@ public class Constants {
     public static final int CATEGORY_MOVIES = 1;
     public static final int CATEGORY_ANIME = 2;
     public static final int CATEGORY_MUSIC = 3;
-    public static final int CATEGORY_LIVE = 4;
-    public static final int CATEGORY_FILES = 5;
-    public static final int CATEGORY_HISTORY = 6;
-    public static final int CATEGORY_ABOUT = 7;
+    public static final int CATEGORY_FILES = 4;
+    public static final int CATEGORY_HISTORY = 5;
+    public static final int CATEGORY_ABOUT = 6;
 
     public static final int HISTORY_TV_SHOWS = 0;
     public static final int HISTORY_EPISODES = 1;
@@ -45,6 +44,4 @@ public class Constants {
     public static final int PROVIDER_JKANIME = 8;
     public static final int PROVIDER_MUSIC163 = 9;
     public static final int PROVIDER_SOUNDCLOUD = 10;
-    public static final int PROVIDER_LIVE_STATIONS = 11;
-    public static final int PROVIDER_LIVE_CHANNELS = 12;
 }
