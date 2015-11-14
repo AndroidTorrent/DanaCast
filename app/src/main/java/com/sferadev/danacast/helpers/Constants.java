@@ -23,12 +23,6 @@ public class Constants {
     public static final int CATEGORY_HISTORY = 5;
     public static final int CATEGORY_ABOUT = 6;
 
-    public static final int HISTORY_TV_SHOWS = 0;
-    public static final int HISTORY_EPISODES = 1;
-    public static final int HISTORY_MOVIES = 2;
-    public static final int HISTORY_LINKS = 3;
-    public static final int HISTORY_FILES = 4;
-
     public static final int ABOUT_GOOGLE_PLUS = 0;
     public static final int ABOUT_PAYPAL = 1;
     public static final int ABOUT_WEBSITE = 2;
