@@ -51,12 +51,4 @@ public class EntryModel {
     public void setLink(String link) {
         mURL = link;
     }
-
-    public String getPictureUrl() {
-        return mPic;
-    }
-
-    public void setPictureUrl(String picUrl) {
-        mPic = picUrl;
-    }
 }
