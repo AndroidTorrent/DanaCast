@@ -52,7 +52,7 @@ public class Seriesblanco {
             public void run() {
                 try {
                     Document document = Jsoup.connect("http://www.seriesblanco.com/").get();
-                    Elements elements = document.select("#PopularPosts1").first()
+                    Elements elements = document.select("#PopularPosts1").get(2)
                             .getElementsByTag("li");
                     for (Element element : elements) {
                         String title = element.getElementsByTag("img").first().attr("title");
