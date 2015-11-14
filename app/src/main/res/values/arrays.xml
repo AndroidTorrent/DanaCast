@@ -2,13 +2,11 @@
 <resources>
     <string-array name="about_names">
         <item>Google Plus Community</item>
-        <item>PayPal donations</item>
         <item>DanaCast website</item>
     </string-array>
 
     <string-array name="about_links">
         <item>https://plus.google.com/u/0/communities/117989078772127331921</item>
-        <item>https://paypal.me/sfera</item>
         <item>http://danacast.me</item>
     </string-array>
 

@@ -24,8 +24,7 @@ public class Constants {
     public static final int CATEGORY_ABOUT = 6;
 
     public static final int ABOUT_GOOGLE_PLUS = 0;
-    public static final int ABOUT_PAYPAL = 1;
-    public static final int ABOUT_WEBSITE = 2;
+    public static final int ABOUT_WEBSITE = 1;
 
     public static final int PROVIDER_SERIESBLANCO = 0;
     public static final int PROVIDER_SERIESYONKIS = 1;
