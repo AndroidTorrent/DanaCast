@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_history:
                 mHistory = new ArrayList<>();
                 PreferenceUtils.removePreference(MainActivity.this, PreferenceUtils.PROPERTY_HISTORY);
-                mContent.add(History.historyCategories());
+                mContent.add(History.getHistory());
                 updateListview();
                 return true;
         }
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 updateListview();
                 break;
             case Constants.TYPE_HISTORY:
-                mContent.add(History.getHistory(position));
+                mContent.add(History.getHistory());
                 updateListview();
                 break;
             case Constants.TYPE_PROVIDER:
@@ -215,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 updateListview();
                 break;
             case Constants.TYPE_SHOW:
-                mHistory.add(entry);
                 ArrayList<EntryModel> episodes = Provider.getEpisodeList(this, getProvider(), entry.getLink());
                 if (!episodes.isEmpty()) {
                     LAST_CONTENT = entry.getTitle();
@@ -224,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 break;
             case Constants.TYPE_EPISODE:
-                mHistory.add(entry);
                 ArrayList<EntryModel> episodeLinks = Provider.getEpisodeLinks(this, getProvider(), entry.getLink());
                 if (LAST_CONTENT != null && LAST_CONTENT.contains("|")) LAST_CONTENT =
                         LAST_CONTENT.substring(0, LAST_CONTENT.lastIndexOf("|") - 1);
@@ -235,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 break;
             case Constants.TYPE_MOVIE:
-                mHistory.add(entry);
                 ArrayList<EntryModel> movieLinks = Provider.getMovieLinks(this, getProvider(), entry.getLink());
                 if (!movieLinks.isEmpty()) {
                     LAST_CONTENT = entry.getTitle();
@@ -280,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 updateListview();
                 break;
         }
-        PreferenceUtils.setPreference(this, PreferenceUtils.PROPERTY_HISTORY, History.entryToJSON(mHistory));
     }
 
     @Override

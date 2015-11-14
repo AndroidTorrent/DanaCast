@@ -54,7 +54,7 @@ public class Category {
             case Constants.CATEGORY_FILES:
                 return ContentUtils.listPartitions();
             case Constants.CATEGORY_HISTORY:
-                return History.historyCategories();
+                return History.getHistory();
             case Constants.CATEGORY_ABOUT:
                 items.add(new EntryModel(Constants.TYPE_EXTERNAL, aboutNames[Constants.ABOUT_GOOGLE_PLUS], aboutLinks[Constants.ABOUT_GOOGLE_PLUS], null));
                 items.add(new EntryModel(Constants.TYPE_EXTERNAL, aboutNames[Constants.ABOUT_PAYPAL], aboutLinks[Constants.ABOUT_PAYPAL], null));
