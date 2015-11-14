@@ -199,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         EntryModel entry = mContent.get(mContent.size() - 1).get(position);
-        LAST_CONTENT = "";
         switch (entry.getType()) {
             case Constants.TYPE_CATEGORY:
                 mContent.add(Category.getProviders(position));
