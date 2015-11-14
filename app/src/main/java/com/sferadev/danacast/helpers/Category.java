@@ -37,7 +37,6 @@ public class Category {
                 items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_GNULA, providerNames[Constants.PROVIDER_GNULA], null, null));
                 items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_ZPELICULAS, providerNames[Constants.PROVIDER_ZPELICULAS], null, null));
                 items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_PORDEDE_MOVIES, providerNames[Constants.PROVIDER_PORDEDE_MOVIES], null, null));
-                items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_YTS, providerNames[Constants.PROVIDER_YTS], null, null));
                 break;
             case Constants.CATEGORY_ANIME:
                 items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_JKANIME, providerNames[Constants.PROVIDER_JKANIME], null, null));

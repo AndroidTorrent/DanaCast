@@ -11,7 +11,6 @@ import com.sferadev.danacast.providers.Seriesblanco;
 import com.sferadev.danacast.providers.Seriesyonkis;
 import com.sferadev.danacast.providers.Soundcloud;
 import com.sferadev.danacast.providers.Watchseries;
-import com.sferadev.danacast.providers.Yts;
 import com.sferadev.danacast.providers.Zpeliculas;
 
 import java.util.ArrayList;
@@ -36,8 +35,6 @@ public class Provider {
                 return Gnula.getSearchResults(query);
             case Constants.PROVIDER_ZPELICULAS:
                 return Zpeliculas.getSearchResults(query);
-            case Constants.PROVIDER_YTS:
-                return Yts.getSearchResults(query);
             case Constants.PROVIDER_JKANIME:
                 return Jkanime.getSearchResults(query);
             case Constants.PROVIDER_MUSIC163:
@@ -72,8 +69,6 @@ public class Provider {
                 return Gnula.getPopularContent();
             case Constants.PROVIDER_ZPELICULAS:
                 return Zpeliculas.getPopularContent();
-            case Constants.PROVIDER_YTS:
-                return Yts.getPopularContent();
             case Constants.PROVIDER_JKANIME:
                 return Jkanime.getPopularContent();
             case Constants.PROVIDER_MUSIC163:
@@ -138,8 +133,6 @@ public class Provider {
                 return Gnula.getMovieLinks(url);
             case Constants.PROVIDER_ZPELICULAS:
                 return Zpeliculas.getMovieLinks(url);
-            case Constants.PROVIDER_YTS:
-                return Yts.getMovieLinks(url);
         }
         return Category.getCategories();
     }

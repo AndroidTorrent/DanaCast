@@ -33,8 +33,7 @@ public class Constants {
     public static final int PROVIDER_GNULA = 4;
     public static final int PROVIDER_ZPELICULAS = 5;
     public static final int PROVIDER_PORDEDE_MOVIES = 6;
-    public static final int PROVIDER_YTS = 7;
-    public static final int PROVIDER_JKANIME = 8;
-    public static final int PROVIDER_MUSIC163 = 9;
-    public static final int PROVIDER_SOUNDCLOUD = 10;
+    public static final int PROVIDER_JKANIME = 7;
+    public static final int PROVIDER_MUSIC163 = 8;
+    public static final int PROVIDER_SOUNDCLOUD = 9;
 }
