@@ -20,6 +20,7 @@ import com.github.sv244.torrentstream.Torrent;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.sferadev.danacast.activities.MainActivity;
 import com.sferadev.danacast.helpers.Constants;
 import com.sferadev.danacast.helpers.Server;
 import com.sferadev.danacast.models.EntryModel;
@@ -104,6 +105,7 @@ public class ContentUtils {
                 })
                 .create();
         dialog.show();
+        MainActivity.mHistory.add(entry);
     }
 
     public static void loadOptionsDialog(final Context context, final Torrent torrent) {
