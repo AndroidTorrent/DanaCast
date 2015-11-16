@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.github.sv244.torrentstream.Torrent;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.sferadev.danacast.App;
 import com.sferadev.danacast.activities.MainActivity;
@@ -28,6 +29,9 @@ import com.sferadev.danacast.helpers.Server;
 import com.sferadev.danacast.models.EntryModel;
 
 import org.apache.commons.io.FilenameUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -155,6 +159,8 @@ public class ContentUtils {
                 MediaMetadata.MEDIA_TYPE_MUSIC_TRACK : MediaMetadata.MEDIA_TYPE_MOVIE);
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, title);
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, url);
+        mediaMetadata.addImage(new WebImage(Uri.parse(pictureUrl(title))));
+        mediaMetadata.addImage(new WebImage(Uri.parse(pictureUrl(title))));
         MediaInfo mSelectedMedia = new MediaInfo.Builder(url)
                 .setContentType((type == Constants.TYPE_SONG ? "audio/" : "video/") +
                         FilenameUtils.getExtension(url))
@@ -274,5 +280,18 @@ public class ContentUtils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static String pictureUrl(String query) {
+        query = query.replace(" ", "%20").split("-")[0];
+        try {
+            JSONObject response = new JSONObject(NetworkUtils.getURLOutput(
+                    "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&imgsz=xxlarge"));
+            JSONArray results = response.getJSONObject("responseData").getJSONArray("results");
+            return results.getJSONObject(0).getString("url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
