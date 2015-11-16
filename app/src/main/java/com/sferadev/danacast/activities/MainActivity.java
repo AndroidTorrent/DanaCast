@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case Constants.TYPE_SONG:
                 LAST_CONTENT = entry.getTitle();
             case Constants.TYPE_LINK:
-                entry.setTitle(LAST_CONTENT.replace("| ", ""));
+                if (LAST_CONTENT != null) entry.setTitle(LAST_CONTENT.replace("| ", ""));
                 ContentUtils.loadIntentDialog(this, entry.getTitle(),
                         entry, Provider.getExternalLink(this, entry.getLink()));
                 break;
