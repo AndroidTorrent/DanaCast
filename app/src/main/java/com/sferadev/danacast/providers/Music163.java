@@ -52,7 +52,7 @@ public class Music163 {
                     JSONArray tracks = response.getJSONObject("result").getJSONArray("songs");
                     for (int i = 0; i < 20; i++) {
                         JSONObject song = tracks.getJSONObject(i);
-                        result.add(new EntryModel(Constants.TYPE_SONG, song.getString("name"),
+                        result.add(new EntryModel(Constants.TYPE_SONG, song.getString("name"), "music163=" +
                                 String.valueOf(song.getInt("id")), null));
                     }
                 } catch (IOException | JSONException e) {
@@ -81,7 +81,7 @@ public class Music163 {
                     JSONArray tracks = response.getJSONObject("result").getJSONArray("tracks");
                     for (int i = 0; i < 20; i++) {
                         JSONObject song = tracks.getJSONObject(i);
-                        result.add(new EntryModel(Constants.TYPE_SONG, song.getString("name"),
+                        result.add(new EntryModel(Constants.TYPE_SONG, song.getString("name"), "music163=" +
                                 String.valueOf(song.getInt("id")), null));
                     }
                 } catch (JSONException e) {
@@ -99,8 +99,8 @@ public class Music163 {
         return null;
     }
 
-    public static String getExternalLink(final String id) {
-        final String[] dfsid = {null};
+    public static String getExternalLink(final String url) {
+        final String id = url.replace("music163=", "");
         final String[] result = new String[1];
         Thread thread = new Thread(new Runnable() {
             @Override

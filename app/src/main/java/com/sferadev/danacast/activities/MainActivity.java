@@ -268,8 +268,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case Constants.TYPE_LINK:
                 entry.setTitle(LAST_CONTENT.replace("| ", ""));
                 ContentUtils.loadIntentDialog(this, entry.getTitle(),
-                        entry, Provider.getExternalLink(this, getProvider(),
-                                entry.getLink()));
+                        entry, Provider.getExternalLink(this, entry.getLink()));
                 break;
             case Constants.TYPE_EXTERNAL:
                 NetworkUtils.openChromeTab(this, entry.getLink());

@@ -98,8 +98,4 @@ public class Zpeliculas {
             return null;
         }
     }
-
-    public static String getExternalLink(String url) {
-        return url;
-    }
 }

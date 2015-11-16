@@ -128,8 +128,8 @@ public class Provider {
         return Category.getCategories();
     }
 
-    public static String getExternalLink(Context context, int provider, String url) {
-        switch (provider) {
+    public static String getExternalLink(Context context, String url) {
+        switch (detectProvider(url)) {
             case Constants.PROVIDER_SERIESYONKIS:
                 return Seriesyonkis.getExternalLink(url);
             case Constants.PROVIDER_WATCHSERIES:
@@ -141,17 +141,27 @@ public class Provider {
                     return null;
                 }
                 return Pordede.getExternalLink(context, url);
-            case Constants.PROVIDER_GNULA:
-                return Gnula.getExternalLink(url);
-            case Constants.PROVIDER_ZPELICULAS:
-                return Zpeliculas.getExternalLink(url);
             case Constants.PROVIDER_JKANIME:
                 return Jkanime.getExternalLink(url);
             case Constants.PROVIDER_MUSIC163:
                 return Music163.getExternalLink(url);
-            case Constants.PROVIDER_SOUNDCLOUD:
-                return Soundcloud.getExternalLink(url);
         }
-        return null;
+        return url;
+    }
+
+    public static int detectProvider(String url) {
+        if (url.contains("seriesyonkis")) {
+            return Constants.PROVIDER_SERIESYONKIS;
+        } else if (url.contains("watchseries")) {
+            return Constants.PROVIDER_WATCHSERIES;
+        } else if (url.contains("pordede")) {
+            return Constants.PROVIDER_PORDEDE_SHOWS;
+        } else if (url.contains("jkanime")) {
+            return Constants.PROVIDER_JKANIME;
+        } else if (url.contains("music163")) {
+            return Constants.PROVIDER_MUSIC163;
+        } else {
+            return -1;
+        }
     }
 }

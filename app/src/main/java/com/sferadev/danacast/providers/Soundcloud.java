@@ -132,7 +132,4 @@ public class Soundcloud {
         }
     }
 
-    public static String getExternalLink(final String url) {
-        return url;
-    }
 }
