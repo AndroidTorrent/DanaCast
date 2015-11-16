@@ -38,6 +38,7 @@ import com.sferadev.danacast.helpers.Category;
 import com.sferadev.danacast.helpers.Constants;
 import com.sferadev.danacast.helpers.History;
 import com.sferadev.danacast.helpers.Provider;
+import com.sferadev.danacast.helpers.Server;
 import com.sferadev.danacast.models.EntryModel;
 import com.sferadev.danacast.utils.ContentUtils;
 import com.sferadev.danacast.utils.NetworkUtils;
@@ -324,6 +325,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            if (query.startsWith("http://")) {
+                Server.getVideoPath(query);
+                return;
+            }
             mContent.add(Provider.getSearchResults(this, getProvider(), query));
             updateListview();
         } else {
