@@ -24,7 +24,7 @@ public class Jkanime {
                     for (Element element : elements) {
                         String title = element.text();
                         String url = element.attr("abs:href");
-                        result.add(new EntryModel(Constants.TYPE_SHOW, title, url, null));
+                        result.add(new EntryModel(Constants.TYPE_SHOW, title, url));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -53,7 +53,7 @@ public class Jkanime {
                     for (Element element : elements) {
                         result.add(new EntryModel(Constants.TYPE_SHOW,
                                 element.getElementsByTag("a").first().text(),
-                                element.getElementsByTag("a").first().attr("abs:href"), null));
+                                element.getElementsByTag("a").first().attr("abs:href")));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -81,11 +81,11 @@ public class Jkanime {
                         String[] lastPage = document.getElementsByClass("listnavi").first().lastElementSibling().text().split(" ");
                         int episodes = Integer.parseInt(lastPage[lastPage.length - 1]);
                         for (int i = 1; i <= episodes; i++) {
-                            result.add(new EntryModel(Constants.TYPE_EPISODE, "Episode " + i, url + i + "/", null));
+                            result.add(new EntryModel(Constants.TYPE_EPISODE, "Episode " + i, url + i + "/"));
                         }
                     } else {
                         String title = document.getElementsByClass("lista_title_uniq").first().text();
-                        result.add(new EntryModel(Constants.TYPE_EPISODE, title, url + title.toLowerCase() + "/", null));
+                        result.add(new EntryModel(Constants.TYPE_EPISODE, title, url + title.toLowerCase() + "/"));
                     }
 
                 } catch (IOException e) {
@@ -117,7 +117,7 @@ public class Jkanime {
                     for (int i = 0; i < videoElements.size(); i++) {
                         String title = titleElements.get(i).text();
                         String linkUrl = videoElements.get(i).attr("src");
-                        result.add(new EntryModel(Constants.TYPE_LINK, title, linkUrl, null));
+                        result.add(new EntryModel(Constants.TYPE_LINK, title, linkUrl));
                     }
                 } catch (IOException | IndexOutOfBoundsException e) {
                     e.printStackTrace();

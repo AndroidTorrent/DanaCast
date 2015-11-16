@@ -246,9 +246,9 @@ public class ContentUtils {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isFile()) {
                     if (FilenameUtils.isExtension(files[i].getName(), supportedExtensions))
-                    result.add(new EntryModel(Constants.TYPE_FILE, files[i].getName(), files[i].getPath(), null));
+                    result.add(new EntryModel(Constants.TYPE_FILE, files[i].getName(), files[i].getPath()));
                 } else if (files[i].isDirectory()) {
-                    result.add(new EntryModel(Constants.TYPE_FOLDER, files[i].getName(), files[i].getPath(), null));
+                    result.add(new EntryModel(Constants.TYPE_FOLDER, files[i].getName(), files[i].getPath()));
                 }
             }
         }
@@ -261,15 +261,15 @@ public class ContentUtils {
         File danaCast = new File(downloads + File.separator + "DanaCast");
         File internal = new File(System.getenv("EXTERNAL_STORAGE"));
         if (danaCast.exists())
-            result.add(new EntryModel(Constants.TYPE_FOLDER, "DanaCast", danaCast.getPath(), null));
+            result.add(new EntryModel(Constants.TYPE_FOLDER, "DanaCast", danaCast.getPath()));
         if (downloads.exists())
-            result.add(new EntryModel(Constants.TYPE_FOLDER, "Downloads", downloads.getPath(), null));
+            result.add(new EntryModel(Constants.TYPE_FOLDER, "Downloads", downloads.getPath()));
         if (internal.exists())
-            result.add(new EntryModel(Constants.TYPE_FOLDER, "Internal", internal.getPath(), null));
+            result.add(new EntryModel(Constants.TYPE_FOLDER, "Internal", internal.getPath()));
         try {
             File external = new File(System.getenv("SECONDARY_STORAGE"));
             if (external.exists()) result.add(new EntryModel(Constants.TYPE_FOLDER, "External",
-                    external.getPath(), null));
+                    external.getPath()));
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

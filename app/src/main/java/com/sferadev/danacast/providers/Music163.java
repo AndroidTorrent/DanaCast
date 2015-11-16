@@ -53,7 +53,7 @@ public class Music163 {
                     for (int i = 0; i < 20; i++) {
                         JSONObject song = tracks.getJSONObject(i);
                         result.add(new EntryModel(Constants.TYPE_SONG, song.getString("name"), "music163=" +
-                                String.valueOf(song.getInt("id")), null));
+                                String.valueOf(song.getInt("id"))));
                     }
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
@@ -82,7 +82,7 @@ public class Music163 {
                     for (int i = 0; i < 20; i++) {
                         JSONObject song = tracks.getJSONObject(i);
                         result.add(new EntryModel(Constants.TYPE_SONG, song.getString("name"), "music163=" +
-                                String.valueOf(song.getInt("id")), null));
+                                String.valueOf(song.getInt("id"))));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

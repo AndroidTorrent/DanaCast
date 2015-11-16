@@ -29,17 +29,17 @@ public class Soundcloud {
                         JSONObject song = tracks.getJSONObject(i);
                         if (song.getBoolean("streamable"))
                             result.add(new EntryModel(Constants.TYPE_SONG, "Song: " + song.getString("title"),
-                                    song.getString("stream_url") + "?client_id=" + CLIENT_ID, null));
+                                    song.getString("stream_url") + "?client_id=" + CLIENT_ID));
                     }
                     for (int i = 0; i < users.length(); i++) {
                         JSONObject user = users.getJSONObject(i);
                         result.add(new EntryModel(Constants.TYPE_SHOW, "User: " + user.getString("username"),
-                                user.getString("uri"), null));
+                                user.getString("uri")));
                     }
                     for (int i = 0; i < groups.length(); i++) {
                         JSONObject group = groups.getJSONObject(i);
                         result.add(new EntryModel(Constants.TYPE_SHOW, "Group: " + group.getString("name"),
-                                group.getString("uri"), null));
+                                group.getString("uri")));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -69,7 +69,7 @@ public class Soundcloud {
                         JSONObject song = tracks.getJSONObject(i);
                         if (song.getBoolean("streamable"))
                             result.add(new EntryModel(Constants.TYPE_SONG, song.getString("title"),
-                                    song.getString("stream_url") + "?client_id=" + CLIENT_ID, null));
+                                    song.getString("stream_url") + "?client_id=" + CLIENT_ID));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -97,7 +97,7 @@ public class Soundcloud {
                         JSONObject song = tracks.getJSONObject(i);
                         if (song.getBoolean("streamable"))
                             result.add(new EntryModel(Constants.TYPE_SONG, "Song: " + song.getString("title"),
-                                    song.getString("stream_url") + "?client_id=" + CLIENT_ID, null));
+                                    song.getString("stream_url") + "?client_id=" + CLIENT_ID));
                     }
                     if (url.contains("user")) {
                         JSONArray playlists = new JSONArray(NetworkUtils.getURLOutput(url + "/playlists?client_id=" + CLIENT_ID))
@@ -107,13 +107,13 @@ public class Soundcloud {
                             JSONObject song = playlists.getJSONObject(i);
                             if (song.getBoolean("streamable"))
                                 result.add(new EntryModel(Constants.TYPE_SONG, "Playlist: " + song.getString("title"),
-                                        song.getString("stream_url") + "?client_id=" + CLIENT_ID, null));
+                                        song.getString("stream_url") + "?client_id=" + CLIENT_ID));
                         }
                         for (int i = 0; i < favorites.length(); i++) {
                             JSONObject song = favorites.getJSONObject(i);
                             if (song.getBoolean("streamable"))
                                 result.add(new EntryModel(Constants.TYPE_SONG, "Favorite: " + song.getString("title"),
-                                        song.getString("stream_url") + "?client_id=" + CLIENT_ID, null));
+                                        song.getString("stream_url") + "?client_id=" + CLIENT_ID));
                         }
                     }
 

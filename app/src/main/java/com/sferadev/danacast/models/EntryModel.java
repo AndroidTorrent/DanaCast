@@ -3,21 +3,19 @@ package com.sferadev.danacast.models;
 public class EntryModel {
 
     private int mType, mId;
-    private String mTitle, mURL, mPic;
+    private String mTitle, mURL;
 
-    public EntryModel(int type, String title, String url, String picUrl) {
+    public EntryModel(int type, String title, String url) {
         mType = type;
         mTitle = title;
         mURL = url;
-        mPic = picUrl;
     }
 
-    public EntryModel(int type, int id, String title, String url, String picUrl) {
+    public EntryModel(int type, int id, String title, String url) {
         mType = type;
         mId = id;
         mTitle = title;
         mURL = url;
-        mPic = picUrl;
     }
 
     public int getType() {

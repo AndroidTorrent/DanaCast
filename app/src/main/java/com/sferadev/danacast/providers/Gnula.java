@@ -27,7 +27,7 @@ public class Gnula {
                         String title = link.text().replace("Ver ", "").split("online \\|")[0];
                         String url = link.attr("abs:href");
                         if (link.text().contains("Ver"))
-                            result.add(new EntryModel(Constants.TYPE_MOVIE, title, url, null));
+                            result.add(new EntryModel(Constants.TYPE_MOVIE, title, url));
                     }
                 } catch (IOException | NullPointerException e) {
                     e.printStackTrace();
@@ -57,7 +57,7 @@ public class Gnula {
                         String title = element.getElementsByTag("img").first().attr("title").split("\\[")[0];
                         String showUrl = element.attr("abs:href");
                         String picUrl = element.getElementsByTag("img").first().attr("src");
-                        result.add(new EntryModel(Constants.TYPE_MOVIE, title, showUrl, picUrl));
+                        result.add(new EntryModel(Constants.TYPE_MOVIE, title, showUrl));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -88,7 +88,7 @@ public class Gnula {
                         for (Element element : elements.get(i).getElementsByTag("a")) {
                             String title = WordUtils.capitalize(element.getElementsByTag("span").first().attr("class"));
                             String linkUrl = element.attr("abs:href");
-                            result.add(new EntryModel(Constants.TYPE_LINK, title + " (" + language + ")", linkUrl, null));
+                            result.add(new EntryModel(Constants.TYPE_LINK, title + " (" + language + ")", linkUrl));
                         }
                     }
                 } catch (IOException e) {

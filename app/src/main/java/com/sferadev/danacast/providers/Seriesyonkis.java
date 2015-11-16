@@ -30,7 +30,7 @@ public class Seriesyonkis {
                     for (Element element : elements) {
                         String title = element.getElementsByTag("a").first().text();
                         String url = element.getElementsByTag("a").first().attr("abs:href");
-                        result.add(new EntryModel(Constants.TYPE_SHOW, title, url, null));
+                        result.add(new EntryModel(Constants.TYPE_SHOW, title, url));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -59,7 +59,7 @@ public class Seriesyonkis {
                     for (Element element : elements) {
                         String title = element.attr("title");
                         String showUrl = element.attr("abs:href");
-                        result.add(new EntryModel(Constants.TYPE_SHOW, title, showUrl, null));
+                        result.add(new EntryModel(Constants.TYPE_SHOW, title, showUrl));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -88,7 +88,7 @@ public class Seriesyonkis {
                         if (element.hasText()) {
                             String title = element.text();
                             String episodeUrl = element.attr("abs:href");
-                            result.add(new EntryModel(Constants.TYPE_EPISODE, title, episodeUrl, null));
+                            result.add(new EntryModel(Constants.TYPE_EPISODE, title, episodeUrl));
                         }
                     }
                 } catch (IOException e) {
@@ -121,7 +121,7 @@ public class Seriesyonkis {
                         String title = WordUtils.capitalize(tempTitle[tempTitle.length - 1].replaceAll("\\.\\w+", ""));
                         String linkUrl = element.getElementsByTag("a").first().attr("abs:href");
                         String language = element.getElementsByClass("flags").first().attr("title");
-                        result.add(new EntryModel(Constants.TYPE_LINK, title + " (" + language + ")", linkUrl, null));
+                        result.add(new EntryModel(Constants.TYPE_LINK, title + " (" + language + ")", linkUrl));
                     }
                 } catch (NullPointerException | IOException e) {
                     e.printStackTrace();

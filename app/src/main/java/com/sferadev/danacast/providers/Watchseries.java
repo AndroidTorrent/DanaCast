@@ -27,7 +27,7 @@ public class Watchseries {
                         Element row = element.getElementsByTag("td").get(1);
                         String title = row.getElementsByTag("a").first().text();
                         String url = row.getElementsByTag("a").first().attr("abs:href");
-                        result.add(new EntryModel(Constants.TYPE_SHOW, title, url, null));
+                        result.add(new EntryModel(Constants.TYPE_SHOW, title, url));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -56,7 +56,7 @@ public class Watchseries {
                     for (Element element : elements) {
                         String title = element.text();
                         String showUrl = element.attr("abs:href");
-                        result.add(new EntryModel(Constants.TYPE_SHOW, title, showUrl, null));
+                        result.add(new EntryModel(Constants.TYPE_SHOW, title, showUrl));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -88,7 +88,7 @@ public class Watchseries {
                         for (Element element : elements) {
                             String title = season + " - " + element.getElementsByTag("span").get(1).text();
                             String episodeUrl = element.attr("abs:href");
-                            result.add(new EntryModel(Constants.TYPE_EPISODE, title, episodeUrl, null));
+                            result.add(new EntryModel(Constants.TYPE_EPISODE, title, episodeUrl));
                         }
                     }
                 } catch (IOException e) {
@@ -120,7 +120,7 @@ public class Watchseries {
                         for (Element element : elements) {
                             String title = WordUtils.capitalize(element.getElementsByTag("span").first().text());
                             String linkUrl = element.getElementsByTag("a").first().attr("abs:href");
-                            result.add(new EntryModel(Constants.TYPE_LINK, title + " (" + language + ")", linkUrl, null));
+                            result.add(new EntryModel(Constants.TYPE_LINK, title + " (" + language + ")", linkUrl));
                         }
                     }
                 } catch (IOException e) {
