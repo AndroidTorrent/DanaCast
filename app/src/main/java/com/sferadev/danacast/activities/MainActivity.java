@@ -1,13 +1,17 @@
 package com.sferadev.danacast.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -118,7 +122,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mTorrentStream = TorrentStream.init(torrentOptions);
         mTorrentStream.addListener(this);
 
-        UpdateUtils.checkUpdates(this);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    Constants.WRITE_EXTERNAL_STORAGE);
+        }
 
         ContentUtils.removeLocalFiles("TorrentCache");
 
@@ -153,6 +162,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
         handleIntent(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.WRITE_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    UpdateUtils.checkUpdates(this);
+                }
+            }
+        }
     }
 
     @Override

@@ -36,4 +36,7 @@ public class Constants {
     public static final int PROVIDER_JKANIME = 7;
     public static final int PROVIDER_MUSIC163 = 8;
     public static final int PROVIDER_SOUNDCLOUD = 9;
+
+    public static final int READ_EXTERNAL_STORAGE = 0;
+    public static final int WRITE_EXTERNAL_STORAGE = 1;
 }

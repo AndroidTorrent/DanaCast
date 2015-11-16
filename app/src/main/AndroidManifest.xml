@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sferadev.danacast">
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" /> <!-- TBD -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- GRANTED -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- GRANTED -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- GRANTED -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- ASK -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- ASK -->
 
     <!-- Samsung Multiwindow -->
     <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
