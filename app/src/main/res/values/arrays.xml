@@ -21,7 +21,6 @@
     </string-array>
 
     <string-array name="provider_names">
-        <item>SeriesBlanco</item>
         <item>SeriesYonkis</item>
         <item>Watchseries</item>
         <item>Pordede</item>
