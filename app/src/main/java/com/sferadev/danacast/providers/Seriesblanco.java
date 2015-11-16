@@ -1,5 +1,7 @@
 package com.sferadev.danacast.providers;
 
+import android.util.Base64;
+
 import com.sferadev.danacast.helpers.Constants;
 import com.sferadev.danacast.models.EntryModel;
 
@@ -115,8 +117,8 @@ public class Seriesblanco {
             @Override
             public void run() {
                 try {
-                    Document document = Jsoup.connect(url).get();
-                    Elements elements = document.getElementsByClass("zebra").first()
+                    Document document = Jsoup.connect(encodedUrl(url)).get();
+                    Elements elements = document.getElementsByClass("as_gridder_table").first()
                             .getElementsByTag("tr");
                     for (Element element : elements) {
                         if (!element.getElementsByTag("a").isEmpty()) {
@@ -165,5 +167,17 @@ public class Seriesblanco {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static String encodedUrl(String url) {
+        String[] values = url.split("serie\\/")[1].split("\\/");
+        byte[] show = new StringBuffer(values[0]).reverse().toString().getBytes();
+        byte[] season = new StringBuffer(values[1].replace("temporada-", "")).reverse().toString().getBytes();
+        byte[] episode = new StringBuffer(values[2].replace("capitulo-", "")).reverse().toString().getBytes();
+        String encodedShow = Base64.encodeToString(Base64.encode(Base64.encode(show, Base64.NO_WRAP), Base64.NO_WRAP), Base64.NO_WRAP);
+        String encodedSeason = Base64.encodeToString(Base64.encode(Base64.encode(season, Base64.NO_WRAP), Base64.NO_WRAP), Base64.NO_WRAP);
+        String encodedEpisode = Base64.encodeToString(Base64.encode(Base64.encode(episode, Base64.NO_WRAP), Base64.NO_WRAP), Base64.NO_WRAP);
+        return "http://seriesblanco.com/ajax.php?action=load&serie=" +
+                encodedShow + "&temp=" + encodedSeason + "&cap=" + encodedEpisode;
     }
 }
