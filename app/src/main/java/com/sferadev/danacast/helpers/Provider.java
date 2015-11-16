@@ -7,7 +7,6 @@ import com.sferadev.danacast.providers.Gnula;
 import com.sferadev.danacast.providers.Jkanime;
 import com.sferadev.danacast.providers.Music163;
 import com.sferadev.danacast.providers.Pordede;
-import com.sferadev.danacast.providers.Seriesblanco;
 import com.sferadev.danacast.providers.Seriesyonkis;
 import com.sferadev.danacast.providers.Soundcloud;
 import com.sferadev.danacast.providers.Watchseries;
@@ -18,8 +17,6 @@ import java.util.ArrayList;
 public class Provider {
     public static ArrayList<EntryModel> getSearchResults(Context context, int provider, String query) {
         switch (provider) {
-            case Constants.PROVIDER_SERIESBLANCO:
-                return Seriesblanco.getSearchResults(query);
             case Constants.PROVIDER_SERIESYONKIS:
                 return Seriesyonkis.getSearchResults(query);
             case Constants.PROVIDER_WATCHSERIES:
@@ -47,8 +44,6 @@ public class Provider {
 
     public static ArrayList<EntryModel> getPopularContent(Context context, int provider) {
         switch (provider) {
-            case Constants.PROVIDER_SERIESBLANCO:
-                return Seriesblanco.getPopularContent();
             case Constants.PROVIDER_SERIESYONKIS:
                 return Seriesyonkis.getPopularContent();
             case Constants.PROVIDER_WATCHSERIES:
@@ -81,8 +76,6 @@ public class Provider {
 
     public static ArrayList<EntryModel> getEpisodeList(Context context, int provider, String url) {
         switch (provider) {
-            case Constants.PROVIDER_SERIESBLANCO:
-                return Seriesblanco.getEpisodeList(url);
             case Constants.PROVIDER_SERIESYONKIS:
                 return Seriesyonkis.getEpisodeList(url);
             case Constants.PROVIDER_WATCHSERIES:
@@ -103,8 +96,6 @@ public class Provider {
 
     public static ArrayList<EntryModel> getEpisodeLinks(Context context, int provider, String url) {
         switch (provider) {
-            case Constants.PROVIDER_SERIESBLANCO:
-                return Seriesblanco.getEpisodeLinks(url);
             case Constants.PROVIDER_SERIESYONKIS:
                 return Seriesyonkis.getEpisodeLinks(url);
             case Constants.PROVIDER_WATCHSERIES:
@@ -139,8 +130,6 @@ public class Provider {
 
     public static String getExternalLink(Context context, int provider, String url) {
         switch (provider) {
-            case Constants.PROVIDER_SERIESBLANCO:
-                return Seriesblanco.getExternalLink(url);
             case Constants.PROVIDER_SERIESYONKIS:
                 return Seriesyonkis.getExternalLink(url);
             case Constants.PROVIDER_WATCHSERIES:

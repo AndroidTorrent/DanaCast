@@ -28,7 +28,6 @@ public class Category {
         ArrayList<EntryModel> items = new ArrayList<>();
         switch (category) {
             case Constants.CATEGORY_SHOWS:
-                items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_SERIESBLANCO, providerNames[Constants.PROVIDER_SERIESBLANCO], null, null));
                 items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_SERIESYONKIS, providerNames[Constants.PROVIDER_SERIESYONKIS], null, null));
                 items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_WATCHSERIES, providerNames[Constants.PROVIDER_WATCHSERIES], null, null));
                 items.add(new EntryModel(Constants.TYPE_PROVIDER, Constants.PROVIDER_PORDEDE_SHOWS, providerNames[Constants.PROVIDER_PORDEDE_SHOWS], null, null));
