@@ -16,6 +16,9 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.tracks.ui;
 
+import com.google.android.gms.cast.MediaTrack;
+import com.google.android.libraries.cast.companionlibrary.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -24,9 +27,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.TextView;
-
-import com.google.android.gms.cast.MediaTrack;
-import com.google.android.libraries.cast.companionlibrary.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class TracksListAdapter extends ArrayAdapter<MediaTrack>
     private int mSelectedPosition = -1;
 
     public TracksListAdapter(Context context, int resource, List<MediaTrack> tracks,
-                             int activePosition) {
+            int activePosition) {
         super(context, resource);
         this.mContext = context;
         mTracks = new ArrayList<>();
@@ -84,13 +84,6 @@ public class TracksListAdapter extends ArrayAdapter<MediaTrack>
         notifyDataSetChanged();
     }
 
-    public MediaTrack getSelectedTrack() {
-        if (mSelectedPosition >= 0) {
-            return mTracks.get(mSelectedPosition);
-        }
-        return null;
-    }
-
     private class Holder {
 
         private final TextView label;
@@ -100,6 +93,13 @@ public class TracksListAdapter extends ArrayAdapter<MediaTrack>
             this.label = label;
             this.radio = radio;
         }
+    }
+
+    public MediaTrack getSelectedTrack() {
+        if (mSelectedPosition >= 0) {
+            return mTracks.get(mSelectedPosition);
+        }
+        return null;
     }
 
 }

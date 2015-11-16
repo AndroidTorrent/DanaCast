@@ -26,38 +26,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MediaQueue {
 
-    public static final int INVALID_POSITION = -1;
     private List<MediaQueueItem> mQueueItems = new CopyOnWriteArrayList<>();
+    public static final int INVALID_POSITION = -1;
     private MediaQueueItem mCurrentItem;
     private boolean mShuffle;
     private int mRepeatMode;
 
-    public MediaQueue() {
-    }
+    public MediaQueue() {}
 
     public MediaQueue(List<MediaQueueItem> queueItems,
-                      MediaQueueItem currentItem, boolean shuffle, int repeatMode) {
+            MediaQueueItem currentItem, boolean shuffle, int repeatMode) {
         mQueueItems = queueItems;
         mCurrentItem = currentItem;
         mShuffle = shuffle;
         mRepeatMode = repeatMode;
-    }
-
-    public static int getPositionInQueue(List<MediaQueueItem> queueList, MediaQueueItem item) {
-        if (item == null) {
-            return INVALID_POSITION;
-        }
-        if (queueList == null || queueList.isEmpty()) {
-            return INVALID_POSITION;
-        }
-
-
-        for (MediaQueueItem queueItem : queueList) {
-            if (queueItem.getItemId() == item.getItemId()) {
-
-            }
-        }
-        return 0;
     }
 
     public final List<MediaQueueItem> getQueueItems() {
@@ -65,7 +47,11 @@ public class MediaQueue {
     }
 
     public final void setQueueItems(List<MediaQueueItem> queue) {
-        mQueueItems = queue;
+        if (queue == null) {
+            mQueueItems = null;
+        } else {
+            mQueueItems = new CopyOnWriteArrayList<>(queue);
+        }
     }
 
     public final MediaQueueItem getCurrentItem() {
@@ -92,14 +78,24 @@ public class MediaQueue {
         mRepeatMode = repeatMode;
     }
 
+    /**
+     * Returns the size of queue, or 0 if it is {@code null}
+     */
     public final int getCount() {
         return mQueueItems == null || mQueueItems.isEmpty() ? 0 : mQueueItems.size();
     }
 
+    /**
+     * Returns {@code true} if and only if the queue is empty or {@code null}
+     */
     public final boolean isEmpty() {
         return mQueueItems == null || mQueueItems.isEmpty();
     }
 
+    /**
+     * Returns the position of the current item in the queue. If the queue is {@code null}, it
+     * will return {@link #INVALID_POSITION}. If the queue is empty, it returns 0.
+     */
     public final int getCurrentItemPosition() {
         if (mQueueItems == null) {
             return INVALID_POSITION;

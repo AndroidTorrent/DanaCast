@@ -26,8 +26,8 @@ public interface OnFailedListener {
      *
      * @param resourceId The resource that has a textual description of the problem
      * @param statusCode An additional integer to further specify the error. Value
-     *                   {@link com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager#NO_STATUS_CODE}  //NOLINT
-     *                   would be interpreted as no status code available.
+     * {@link com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager#NO_STATUS_CODE}  //NOLINT
+     * would be interpreted as no status code available.
      */
     void onFailed(int resourceId, int statusCode);
 }

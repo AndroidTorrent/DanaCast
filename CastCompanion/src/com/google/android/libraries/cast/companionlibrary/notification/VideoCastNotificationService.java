@@ -54,15 +54,17 @@ import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.
  */
 public class VideoCastNotificationService extends Service {
 
+    private static final String TAG = LogUtils.makeLogTag(VideoCastNotificationService.class);
+
     public static final String ACTION_TOGGLE_PLAYBACK =
             "com.google.android.libraries.cast.companionlibrary.action.toggleplayback";
     public static final String ACTION_STOP =
             "com.google.android.libraries.cast.companionlibrary.action.stop";
     public static final String ACTION_VISIBILITY =
             "com.google.android.libraries.cast.companionlibrary.action.notificationvisibility";
-    public static final String NOTIFICATION_VISIBILITY = "visible";
-    private static final String TAG = LogUtils.makeLogTag(VideoCastNotificationService.class);
     private static final int NOTIFICATION_ID = 1;
+    public static final String NOTIFICATION_VISIBILITY = "visible";
+
     private Bitmap mVideoArtBitmap;
     private boolean mIsPlaying;
     private Class<?> mTargetActivity;
@@ -123,13 +125,7 @@ public class VideoCastNotificationService extends Service {
         if (intent != null) {
 
             String action = intent.getAction();
-            if (ACTION_TOGGLE_PLAYBACK.equals(action) && Utils.IS_ICS_OR_ABOVE) {
-                LOGD(TAG, "onStartCommand(): Action: ACTION_TOGGLE_PLAYBACK");
-                togglePlayback();
-            } else if (ACTION_STOP.equals(action) && Utils.IS_ICS_OR_ABOVE) {
-                LOGD(TAG, "onStartCommand(): Action: ACTION_STOP");
-                stopApplication();
-            } else if (ACTION_VISIBILITY.equals(action)) {
+            if (ACTION_VISIBILITY.equals(action)) {
                 mVisible = intent.getBooleanExtra(NOTIFICATION_VISIBILITY, false);
                 LOGD(TAG, "onStartCommand(): Action: ACTION_VISIBILITY " + mVisible);
                 onRemoteMediaPlayerStatusUpdated(mCastManager.getPlaybackStatus());
@@ -284,7 +280,7 @@ public class VideoCastNotificationService extends Service {
         // Main Content PendingIntent
         Bundle mediaWrapper = Utils.mediaInfoToBundle(mCastManager.getRemoteMediaInformation());
         Intent contentIntent = new Intent(this, mTargetActivity);
-        contentIntent.putExtra("media", mediaWrapper);
+        contentIntent.putExtra(VideoCastManager.EXTRA_MEDIA, mediaWrapper);
 
         // Media metadata
         MediaMetadata metadata = info.getMetadata();
@@ -294,7 +290,7 @@ public class VideoCastNotificationService extends Service {
         stackBuilder.addParentStack(mTargetActivity);
         stackBuilder.addNextIntent(contentIntent);
         if (stackBuilder.getIntentCount() > 1) {
-            stackBuilder.editIntentAt(1).putExtra("media", mediaWrapper);
+            stackBuilder.editIntentAt(1).putExtra(VideoCastManager.EXTRA_MEDIA, mediaWrapper);
         }
         PendingIntent contentPendingIntent =
                 stackBuilder.getPendingIntent(NOTIFICATION_ID, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -309,7 +305,7 @@ public class VideoCastNotificationService extends Service {
 
         NotificationCompat.Builder builder
                 = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_stat_hardware_cast_connected)
                 .setContentTitle(metadata.getString(MediaMetadata.KEY_TITLE))
                 .setContentText(castingTo)
                 .setContentIntent(contentPendingIntent)

@@ -16,6 +16,12 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.tracks.ui;
 
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaTrack;
+import com.google.android.libraries.cast.companionlibrary.R;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.utils.Utils;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -27,12 +33,6 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.google.android.gms.cast.MediaInfo;
-import com.google.android.gms.cast.MediaTrack;
-import com.google.android.libraries.cast.companionlibrary.R;
-import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
-import com.google.android.libraries.cast.companionlibrary.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +41,6 @@ import java.util.List;
  */
 public class TracksChooserDialog extends DialogFragment {
 
-    private static final long TEXT_TRACK_NONE_ID = -1;
     private VideoCastManager mCastManager;
     private long[] mActiveTracks = null;
     private MediaInfo mMediaInfo;
@@ -49,19 +48,9 @@ public class TracksChooserDialog extends DialogFragment {
     private TracksListAdapter mAudioVideoAdapter;
     private List<MediaTrack> mTextTracks = new ArrayList<>();
     private List<MediaTrack> mAudioTracks = new ArrayList<>();
+    private static final long TEXT_TRACK_NONE_ID = -1;
     private int mSelectedTextPosition = 0;
     private int mSelectedAudioPosition = -1;
-
-    /**
-     * Call this static method to create a new instance of the dialog.
-     */
-    public static TracksChooserDialog newInstance(MediaInfo mediaInfo) {
-        TracksChooserDialog fragment = new TracksChooserDialog();
-        Bundle bundle = new Bundle();
-        bundle.putBundle(VideoCastManager.EXTRA_MEDIA, Utils.mediaInfoToBundle(mediaInfo));
-        fragment.setArguments(bundle);
-        return fragment;
-    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -221,5 +210,16 @@ public class TracksChooserDialog extends DialogFragment {
                 }
             }
         }
+    }
+
+    /**
+     * Call this static method to create a new instance of the dialog.
+     */
+    public static TracksChooserDialog newInstance(MediaInfo mediaInfo) {
+        TracksChooserDialog fragment = new TracksChooserDialog();
+        Bundle bundle = new Bundle();
+        bundle.putBundle(VideoCastManager.EXTRA_MEDIA, Utils.mediaInfoToBundle(mediaInfo));
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }

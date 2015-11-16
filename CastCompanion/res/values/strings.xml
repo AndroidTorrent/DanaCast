@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   Copyright 2015 Google Inc. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,7 @@
   -->
 <resources>
 
-    <string name="ccl_version">2.3.2</string>
+    <string name="ccl_version">2.6.1</string>
     <string name="ccl_media_route_menu_title">Play on&#8230;</string>
     <string name="ccl_live">Live</string>
     <string name="ccl_cancel">Cancel</string>

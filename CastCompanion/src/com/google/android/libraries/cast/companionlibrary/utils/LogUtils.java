@@ -16,9 +16,9 @@
 
 package com.google.android.libraries.cast.companionlibrary.utils;
 
-import android.util.Log;
-
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
+
+import android.util.Log;
 
 /**
  * Provides a simple wrapper to control logging in development vs production environment. This

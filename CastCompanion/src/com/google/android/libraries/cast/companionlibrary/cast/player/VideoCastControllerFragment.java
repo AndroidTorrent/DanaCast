@@ -63,13 +63,13 @@ import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.
 
 /**
  * A fragment that provides a mechanism to retain the state and other needed objects for
- * {@link com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity} (or more generally, for any class implementing
- * {@link com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastController} interface). This can come very handy when set up of that activity
+ * {@link VideoCastControllerActivity} (or more generally, for any class implementing
+ * {@link VideoCastController} interface). This can come very handy when set up of that activity
  * allows for a configuration changes. Most of the logic required for
- * {@link com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity} is maintained in this fragment to enable application
+ * {@link VideoCastControllerActivity} is maintained in this fragment to enable application
  * developers provide a different implementation, if desired.
  * <p/>
- * This fragment also provides an implementation of {@link com.google.android.libraries.cast.companionlibrary.cast.player.MediaAuthListener} which can be useful
+ * This fragment also provides an implementation of {@link MediaAuthListener} which can be useful
  * if a pre-authorization is required for playback of a media.
  */
 public class VideoCastControllerFragment extends Fragment implements
@@ -77,14 +77,13 @@ public class VideoCastControllerFragment extends Fragment implements
 
     private static final String EXTRAS = "extras";
     private static final String TAG = LogUtils.makeLogTag(VideoCastControllerFragment.class);
-    private static boolean sDialogCanceled = false;
-    protected boolean mAuthSuccess = true;
     private MediaInfo mSelectedMedia;
     private VideoCastManager mCastManager;
     private MediaAuthService mMediaAuthService;
     private Thread mAuthThread;
     private Timer mMediaAuthTimer;
     private Handler mHandler;
+    protected boolean mAuthSuccess = true;
     private VideoCastController mCastController;
     private FetchBitmapTask mImageAsyncTask;
     private Timer mSeekbarTimer;
@@ -92,18 +91,12 @@ public class VideoCastControllerFragment extends Fragment implements
     private MyCastConsumer mCastConsumer;
     private OverallState mOverallState = OverallState.UNKNOWN;
     private UrlAndBitmap mUrlAndBitmap;
+    private static boolean sDialogCanceled = false;
     private boolean mIsFresh = true;
     private MediaStatus mMediaStatus;
 
-    /**
-     * Call this static method to create an instance of this fragment.
-     */
-    public static VideoCastControllerFragment newInstance(Bundle extras) {
-        VideoCastControllerFragment f = new VideoCastControllerFragment();
-        Bundle b = new Bundle();
-        b.putBundle(EXTRAS, extras);
-        f.setArguments(b);
-        return f;
+    private enum OverallState {
+        AUTHORIZING, PLAYBACK, UNKNOWN
     }
 
     @Override
@@ -196,17 +189,149 @@ public class VideoCastControllerFragment extends Fragment implements
                 authService.getTimeout());
     }
 
+    /*
+     * A TimerTask that will be called when the auth timer expires
+     */
+    class MediaAuthServiceTimerTask extends TimerTask {
+
+        private final Thread mThread;
+
+        public MediaAuthServiceTimerTask(Thread thread) {
+            this.mThread = thread;
+        }
+
+        @Override
+        public void run() {
+            if (mThread != null) {
+                LOGD(TAG, "Timer is expired, going to interrupt the thread");
+                mThread.interrupt();
+                mHandler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        mCastController.showLoading(false);
+                        showErrorDialog(getString(R.string.ccl_failed_authorization_timeout));
+                        mAuthSuccess = false;
+                        if ((mMediaAuthService != null)
+                                && (mMediaAuthService.getStatus() == MediaAuthStatus.PENDING)) {
+                            mMediaAuthService.abortAuthorization(MediaAuthStatus.TIMED_OUT);
+                        }
+                    }
+                });
+
+            }
+        }
+
+    }
+
+    private class MyCastConsumer extends VideoCastConsumerImpl {
+
+        @Override
+        public void onDisconnected() {
+            mCastController.closeActivity();
+        }
+
+        @Override
+        public void onApplicationDisconnected(int errorCode) {
+            mCastController.closeActivity();
+        }
+
+        @Override
+        public void onRemoteMediaPlayerMetadataUpdated() {
+            try {
+                mSelectedMedia = mCastManager.getRemoteMediaInformation();
+                updateClosedCaptionState();
+                updateMetadata();
+            } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
+                LOGE(TAG, "Failed to update the metadata due to network issues", e);
+            }
+        }
+
+        @Override
+        public void onFailed(int resourceId, int statusCode) {
+            LOGD(TAG, "onFailed(): " + getString(resourceId) + ", status code: " + statusCode);
+            if (statusCode == RemoteMediaPlayer.STATUS_FAILED
+                    || statusCode == RemoteMediaPlayer.STATUS_TIMED_OUT) {
+                Utils.showToast(getActivity(), resourceId);
+                mCastController.closeActivity();
+            }
+        }
+
+        @Override
+        public void onRemoteMediaPlayerStatusUpdated() {
+            updatePlayerStatus();
+        }
+
+        @Override
+        public void onMediaQueueUpdated(List<MediaQueueItem> queueItems, MediaQueueItem item,
+                int repeatMode, boolean shuffle) {
+
+            int size = 0;
+            int position = 0;
+            if (queueItems != null) {
+                size = queueItems.size();
+                position = queueItems.indexOf(item);
+            }
+            mCastController.onQueueItemsUpdated(size, position);
+        }
+
+        @Override
+        public void onConnectionSuspended(int cause) {
+            mCastController.updateControllersStatus(false);
+        }
+
+        @Override
+        public void onConnectivityRecovered() {
+            mCastController.updateControllersStatus(true);
+        }
+
+    }
+
+    private class UpdateSeekbarTask extends TimerTask {
+
+        @Override
+        public void run() {
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    int currentPos;
+                    if (mPlaybackState == MediaStatus.PLAYER_STATE_BUFFERING) {
+                        return;
+                    }
+                    if (!mCastManager.isConnected()) {
+                        return;
+                    }
+                    try {
+                        int duration = (int) mCastManager.getMediaDuration();
+                        if (duration > 0) {
+                            try {
+                                currentPos = (int) mCastManager.getCurrentMediaPosition();
+                                mCastController.updateSeekbar(currentPos, duration);
+                            } catch (Exception e) {
+                                LOGE(TAG, "Failed to get current media position", e);
+                            }
+                        }
+                    } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
+                        LOGE(TAG, "Failed to update the progress bar due to network issues", e);
+                    }
+
+                }
+            });
+        }
+    }
+
     /**
      * Loads the media on the cast device.
      *
-     * @param mediaInfo           The media to be loaded
+     * @param mediaInfo The media to be loaded
      * @param shouldStartPlayback If {@code true}, playback starts after load automatically
-     * @param startPoint          The position to start the play back
-     * @param customData          An optional custom data to be sent along the load api; it can be
-     *                            {@code null}
+     * @param startPoint The position to start the play back
+     * @param customData An optional custom data to be sent along the load api; it can be
+     * {@code null}
      */
     private void onReady(MediaInfo mediaInfo, boolean shouldStartPlayback, int startPoint,
-                         JSONObject customData) {
+            JSONObject customData) {
         mSelectedMedia = mediaInfo;
         updateClosedCaptionState();
         try {
@@ -247,10 +372,23 @@ public class VideoCastControllerFragment extends Fragment implements
                 && mSelectedMedia != null
                 && mCastManager.getTracksPreferenceManager().isCaptionEnabled()) {
             List<MediaTrack> tracks = mSelectedMedia.getMediaTracks();
-            state = tracks == null || tracks.isEmpty() ? VideoCastController.CC_DISABLED
-                    : VideoCastController.CC_ENABLED;
+            state = hasAudioOrTextTrack(tracks) ? VideoCastController.CC_ENABLED
+                    : VideoCastController.CC_DISABLED;
         }
         mCastController.setClosedCaptionState(state);
+    }
+
+    private boolean hasAudioOrTextTrack(List<MediaTrack> tracks) {
+        if (tracks == null || tracks.isEmpty()) {
+            return false;
+        }
+        for (MediaTrack track : tracks) {
+            if (track.getType() == MediaTrack.TYPE_AUDIO
+                    || track.getType() == MediaTrack.TYPE_TEXT) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void stopTrickplayTimer() {
@@ -308,6 +446,7 @@ public class VideoCastControllerFragment extends Fragment implements
 
     private void updatePlayerStatus() {
         int mediaStatus = mCastManager.getPlaybackStatus();
+        mMediaStatus = mCastManager.getMediaStatus();
         LOGD(TAG, "updatePlayerStatus(), state: " + mediaStatus);
         if (mSelectedMedia == null) {
             return;
@@ -342,14 +481,12 @@ public class VideoCastControllerFragment extends Fragment implements
                 }
                 break;
             case MediaStatus.PLAYER_STATE_IDLE:
+                LOGD(TAG, "Idle Reason: " + (mCastManager.getIdleReason()));
                 switch (mCastManager.getIdleReason()) {
                     case MediaStatus.IDLE_REASON_FINISHED:
-                        try {
-                            if (!mIsFresh && mMediaStatus.getLoadingItemId() == MediaQueueItem.INVALID_ITEM_ID) {
-                                mCastController.closeActivity();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        if (!mIsFresh && mMediaStatus.getLoadingItemId()
+                                == MediaQueueItem.INVALID_ITEM_ID) {
+                            mCastController.closeActivity();
                         }
                         break;
                     case MediaStatus.IDLE_REASON_CANCELED:
@@ -359,10 +496,16 @@ public class VideoCastControllerFragment extends Fragment implements
                                     mPlaybackState = MediaStatus.PLAYER_STATE_IDLE;
                                     mCastController.setPlaybackStatus(mPlaybackState);
                                 }
+                            } else {
+                                mCastController.closeActivity();
                             }
                         } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
                             LOGD(TAG, "Failed to determine if stream is live", e);
                         }
+                        break;
+                    case MediaStatus.IDLE_REASON_INTERRUPTED:
+                        mPlaybackState = MediaStatus.PLAYER_STATE_IDLE;
+                        mCastController.setPlaybackStatus(mPlaybackState);
                         break;
                     default:
                         break;
@@ -387,9 +530,9 @@ public class VideoCastControllerFragment extends Fragment implements
         super.onResume();
         try {
             if (mCastManager.isRemoteMediaPaused() || mCastManager.isRemoteMediaPlaying()) {
-                if (mCastManager.getRemoteMediaInformation() != null
-                        && mSelectedMedia.getContentId()
-                        .equals(mCastManager.getRemoteMediaInformation().getContentId())) {
+                if (mCastManager.getRemoteMediaInformation() != null && mSelectedMedia
+                    .getContentId().equals(
+                        mCastManager.getRemoteMediaInformation().getContentId())) {
                     mIsFresh = false;
                 }
             }
@@ -427,6 +570,17 @@ public class VideoCastControllerFragment extends Fragment implements
         super.onPause();
     }
 
+    /**
+     * Call this static method to create an instance of this fragment.
+     */
+    public static VideoCastControllerFragment newInstance(Bundle extras) {
+        VideoCastControllerFragment f = new VideoCastControllerFragment();
+        Bundle b = new Bundle();
+        b.putBundle(EXTRAS, extras);
+        f.setArguments(b);
+        return f;
+    }
+
     /*
      * Gets the image at the given url and populates the image view with that. It tries to cache the
      * image to avoid unnecessary network calls.
@@ -446,6 +600,9 @@ public class VideoCastControllerFragment extends Fragment implements
             return;
         }
         mUrlAndBitmap = null;
+        if (mImageAsyncTask != null) {
+            mImageAsyncTask.cancel(true);
+        }
         mImageAsyncTask = new FetchBitmapTask() {
             @Override
             protected void onPostExecute(Bitmap bitmap) {
@@ -453,7 +610,9 @@ public class VideoCastControllerFragment extends Fragment implements
                     mUrlAndBitmap = new UrlAndBitmap();
                     mUrlAndBitmap.mBitmap = bitmap;
                     mUrlAndBitmap.mUrl = uri;
-                    mCastController.setImage(bitmap);
+                    if (!isCancelled()) {
+                        mCastController.setImage(bitmap);
+                    }
                 }
                 if (this == mImageAsyncTask) {
                     mImageAsyncTask = null;
@@ -461,6 +620,48 @@ public class VideoCastControllerFragment extends Fragment implements
             }
         };
         mImageAsyncTask.execute(uri);
+    }
+
+    /**
+     * A modal dialog with an OK button, where upon clicking on it, will finish the activity. We
+     * use a DialogFragment so during configuration changes, system manages the dialog for us.
+     */
+    public static class ErrorDialogFragment extends DialogFragment {
+
+        private VideoCastController mController;
+        private static final String MESSAGE = "message";
+
+        public static ErrorDialogFragment newInstance(String message) {
+            ErrorDialogFragment frag = new ErrorDialogFragment();
+            Bundle args = new Bundle();
+            args.putString(MESSAGE, message);
+            frag.setArguments(args);
+            return frag;
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            mController = (VideoCastController) activity;
+            super.onAttach(activity);
+            setCancelable(false);
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            String message = getArguments().getString(MESSAGE);
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.ccl_error)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.ccl_ok, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sDialogCanceled = true;
+                            mController.closeActivity();
+                        }
+                    })
+                    .create();
+        }
     }
 
     /*
@@ -557,7 +758,7 @@ public class VideoCastControllerFragment extends Fragment implements
 
     @Override
     public void onAuthResult(MediaAuthStatus status, final MediaInfo info, final String message,
-                             final int startPoint, final JSONObject customData) {
+            final int startPoint, final JSONObject customData) {
         if (status == MediaAuthStatus.AUTHORIZED && mAuthSuccess) {
             // successful authorization
             mMediaAuthService = null;
@@ -624,6 +825,19 @@ public class VideoCastControllerFragment extends Fragment implements
     }
 
     /*
+     * A simple class that holds a URL and a bitmap, mainly used to cache the fetched image
+     */
+    private class UrlAndBitmap {
+
+        private Bitmap mBitmap;
+        private Uri mUrl;
+
+        private boolean isMatch(Uri url) {
+            return url != null && mBitmap != null && url.equals(mUrl);
+        }
+    }
+
+    /*
      * Cleanup of threads and timers and bitmap and ...
      */
     private void cleanup() {
@@ -656,7 +870,7 @@ public class VideoCastControllerFragment extends Fragment implements
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setImmersive() {
-        if (Build.VERSION.SDK_INT < 11) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             return;
         }
         int newUiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
@@ -681,204 +895,15 @@ public class VideoCastControllerFragment extends Fragment implements
     @Override
     public void onSkipNextClicked(View v)
             throws TransientNetworkDisconnectionException, NoConnectionException {
+        mCastController.showLoading(true);
         mCastManager.queueNext(null);
     }
 
     @Override
     public void onSkipPreviousClicked(View v)
             throws TransientNetworkDisconnectionException, NoConnectionException {
+        mCastController.showLoading(true);
         mCastManager.queuePrev(null);
-    }
-
-    private enum OverallState {
-        AUTHORIZING, PLAYBACK, UNKNOWN
-    }
-
-    /**
-     * A modal dialog with an OK button, where upon clicking on it, will finish the activity. We
-     * use a DialogFragment so during configuration changes, system manages the dialog for us.
-     */
-    public static class ErrorDialogFragment extends DialogFragment {
-
-        private static final String MESSAGE = "message";
-        private VideoCastController mController;
-
-        public static ErrorDialogFragment newInstance(String message) {
-            ErrorDialogFragment frag = new ErrorDialogFragment();
-            Bundle args = new Bundle();
-            args.putString(MESSAGE, message);
-            frag.setArguments(args);
-            return frag;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            mController = (VideoCastController) activity;
-            super.onAttach(activity);
-            setCancelable(false);
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String message = getArguments().getString(MESSAGE);
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.ccl_error)
-                    .setMessage(message)
-                    .setPositiveButton(R.string.ccl_ok, new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            sDialogCanceled = true;
-                            mController.closeActivity();
-                        }
-                    })
-                    .create();
-        }
-    }
-
-    /*
-     * A TimerTask that will be called when the auth timer expires
-     */
-    class MediaAuthServiceTimerTask extends TimerTask {
-
-        private final Thread mThread;
-
-        public MediaAuthServiceTimerTask(Thread thread) {
-            this.mThread = thread;
-        }
-
-        @Override
-        public void run() {
-            if (mThread != null) {
-                LOGD(TAG, "Timer is expired, going to interrupt the thread");
-                mThread.interrupt();
-                mHandler.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        mCastController.showLoading(false);
-                        showErrorDialog(getString(R.string.ccl_failed_authorization_timeout));
-                        mAuthSuccess = false;
-                        if ((mMediaAuthService != null)
-                                && (mMediaAuthService.getStatus() == MediaAuthStatus.PENDING)) {
-                            mMediaAuthService.abortAuthorization(MediaAuthStatus.TIMED_OUT);
-                        }
-                    }
-                });
-
-            }
-        }
-
-    }
-
-    private class MyCastConsumer extends VideoCastConsumerImpl {
-
-        @Override
-        public void onDisconnected() {
-            mCastController.closeActivity();
-        }
-
-        @Override
-        public void onApplicationDisconnected(int errorCode) {
-            mCastController.closeActivity();
-        }
-
-        @Override
-        public void onRemoteMediaPlayerMetadataUpdated() {
-            try {
-                mSelectedMedia = mCastManager.getRemoteMediaInformation();
-                updateClosedCaptionState();
-                updateMetadata();
-            } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
-                LOGE(TAG, "Failed to update the metadata due to network issues", e);
-            }
-        }
-
-        @Override
-        public void onFailed(int resourceId, int statusCode) {
-            LOGD(TAG, "onFailed(): " + getString(resourceId) + ", status code: " + statusCode);
-            if (statusCode == RemoteMediaPlayer.STATUS_FAILED
-                    || statusCode == RemoteMediaPlayer.STATUS_TIMED_OUT) {
-                Utils.showToast(getActivity(), resourceId);
-                mCastController.closeActivity();
-            }
-        }
-
-        @Override
-        public void onRemoteMediaPlayerStatusUpdated() {
-            updatePlayerStatus();
-        }
-
-        @Override
-        public void onMediaQueueUpdated(List<MediaQueueItem> queueItems, MediaQueueItem item,
-                                        int repeatMode, boolean shuffle) {
-
-            int size = 0;
-            int position = 0;
-            if (queueItems != null) {
-                size = queueItems.size();
-                position = queueItems.indexOf(item);
-            }
-            mCastController.onQueueItemsUpdated(size, position);
-        }
-
-        @Override
-        public void onConnectionSuspended(int cause) {
-            mCastController.updateControllersStatus(false);
-        }
-
-        @Override
-        public void onConnectivityRecovered() {
-            mCastController.updateControllersStatus(true);
-        }
-
-    }
-
-    private class UpdateSeekbarTask extends TimerTask {
-
-        @Override
-        public void run() {
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    int currentPos;
-                    if (mPlaybackState == MediaStatus.PLAYER_STATE_BUFFERING) {
-                        return;
-                    }
-                    if (!mCastManager.isConnected()) {
-                        return;
-                    }
-                    try {
-                        int duration = (int) mCastManager.getMediaDuration();
-                        if (duration > 0) {
-                            try {
-                                currentPos = (int) mCastManager.getCurrentMediaPosition();
-                                mCastController.updateSeekbar(currentPos, duration);
-                            } catch (Exception e) {
-                                LOGE(TAG, "Failed to get current media position", e);
-                            }
-                        }
-                    } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
-                        LOGE(TAG, "Failed to update the progress bar due to network issues", e);
-                    }
-
-                }
-            });
-        }
-    }
-
-    /*
-     * A simple class that holds a URL and a bitmap, mainly used to cache the fetched image
-     */
-    private class UrlAndBitmap {
-
-        private Bitmap mBitmap;
-        private Uri mUrl;
-
-        private boolean isMatch(Uri url) {
-            return url != null && mBitmap != null && url.equals(mUrl);
-        }
     }
 
 }

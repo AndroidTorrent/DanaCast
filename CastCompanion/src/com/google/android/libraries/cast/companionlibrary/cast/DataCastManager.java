@@ -16,15 +16,14 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast;
 
-import android.content.Context;
-import android.support.v7.app.MediaRouteDialogFactory;
-import android.support.v7.media.MediaRouter.RouteInfo;
-import android.text.TextUtils;
+import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGD;
+import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
 
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.cast.Cast.CastOptions.Builder;
 import com.google.android.gms.cast.CastDevice;
+import com.google.android.gms.cast.CastStatusCodes;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.ResultCallback;
@@ -36,25 +35,27 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConn
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
 
+import android.content.Context;
+import android.support.v7.app.MediaRouteDialogFactory;
+import android.support.v7.media.MediaRouter.RouteInfo;
+import android.text.TextUtils;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGD;
-import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
-
 /**
  * A concrete subclass of {@link BaseCastManager} that is suitable for data-centric applications
  * that use multiple namespaces.
- * <p/>
+ * <p>
  * This is a singleton that needs to be "initialized" (by calling <code>initialize()</code>) prior
  * to usage. Subsequent to initialization, an easier way to get access to the singleton class is to
  * call a variant of <code>getInstance()</code>. After initialization, callers can enable any
  * available feature (all features are off by default). To do so, call <code>enableFeature()</code>
  * and pass an OR-ed expression built from one ore more of the following constants:
- * <p/>
+ * <p>
  * <ul>
  * <li>FEATURE_DEBUGGING: to enable Google Play Services level logging</li>
  * </ul>
@@ -86,19 +87,6 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
     private DataCastManager() {
     }
 
-    protected DataCastManager(Context context, String applicationId, String... namespaces) {
-        super(context, applicationId);
-        if (namespaces != null) {
-            for (String namespace : namespaces) {
-                if (!TextUtils.isEmpty(namespace)) {
-                    mNamespaceList.add(namespace);
-                } else {
-                    LOGD(TAG, "A null or empty namespace was ignored.");
-                }
-            }
-        }
-    }
-
     /**
      * Initializes the DataCastManager for clients. Before clients can use DataCastManager, they
      * need to initialize it by calling this static method. Then clients can obtain an instance of
@@ -107,10 +95,10 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
      *
      * @param context
      * @param applicationId the application ID for your application
-     * @param namespaces    Namespaces to be set up for this class.
+     * @param namespaces Namespaces to be set up for this class.
      */
     public static synchronized DataCastManager initialize(Context context,
-                                                          String applicationId, String... namespaces) {
+            String applicationId, String... namespaces) {
         if (sInstance == null) {
             LOGD(TAG, "New instance of DataCastManager is created");
             if (ConnectionResult.SUCCESS != GooglePlayServicesUtil
@@ -122,6 +110,19 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
             sInstance = new DataCastManager(context, applicationId, namespaces);
         }
         return sInstance;
+    }
+
+    protected DataCastManager(Context context, String applicationId, String... namespaces) {
+        super(context, applicationId);
+        if (namespaces != null) {
+            for (String namespace : namespaces) {
+                if (!TextUtils.isEmpty(namespace)) {
+                    mNamespaceList.add(namespace);
+                } else {
+                    LOGD(TAG, "A null or empty namespace was ignored.");
+                }
+            }
+        }
     }
 
     /**
@@ -143,9 +144,9 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
      * the callback receiver. If the namespace is already registered, this returns
      * <code>false</code>, otherwise returns <code>true</code>.
      *
-     * @throws NoConnectionException                  If no connectivity to the device exists
+     * @throws NoConnectionException If no connectivity to the device exists
      * @throws TransientNetworkDisconnectionException If framework is still trying to recover from a
-     *                                                possibly transient loss of network
+     * possibly transient loss of network
      */
     public boolean addNamespace(String namespace) throws
             TransientNetworkDisconnectionException, NoConnectionException {
@@ -171,9 +172,9 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
      * Unregisters a namespace. If namespace is not already registered, it returns
      * <code>false</code>, otherwise a successful removal returns <code>true</code>.
      *
-     * @throws NoConnectionException                  If no connectivity to the device exists
+     * @throws NoConnectionException If no connectivity to the device exists
      * @throws TransientNetworkDisconnectionException If framework is still trying to recover from a
-     *                                                possibly transient loss of network
+     * possibly transient loss of network
      */
     public boolean removeNamespace(String namespace) throws TransientNetworkDisconnectionException,
             NoConnectionException {
@@ -201,8 +202,8 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
      * it will call <code>onMessageSendFailed</code>
      *
      * @throws IllegalArgumentException If the the message is null, empty, or too long; or if the
-     *                                  namespace is null or too long.
-     * @throws IllegalStateException    If there is no active service connection.
+     * namespace is null or too long.
+     * @throws IllegalStateException If there is no active service connection.
      * @throws IOException
      */
     public void sendDataMessage(String message, String namespace)
@@ -239,6 +240,27 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
         return builder;
     }
 
+    class CastListener extends Cast.Listener {
+
+        /*
+         * (non-Javadoc)
+         * @see com.google.android.gms.cast.Cast.Listener#onApplicationDisconnected (int)
+         */
+        @Override
+        public void onApplicationDisconnected(int statusCode) {
+            DataCastManager.this.onApplicationDisconnected(statusCode);
+        }
+
+        /*
+         * (non-Javadoc)
+         * @see com.google.android.gms.cast.Cast.Listener#onApplicationStatusChanged ()
+         */
+        @Override
+        public void onApplicationStatusChanged() {
+            DataCastManager.this.onApplicationStatusChanged();
+        }
+    }
+
     @Override
     protected MediaRouteDialogFactory getMediaRouteDialogFactory() {
         return null;
@@ -246,7 +268,7 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
 
     @Override
     public void onApplicationConnected(ApplicationMetadata appMetadata, String applicationStatus,
-                                       String sessionId, boolean wasLaunched) {
+            String sessionId, boolean wasLaunched) {
         LOGD(TAG, "onApplicationConnected() reached with sessionId: " + sessionId);
 
         // saving session for future retrieval; we only save the last session info
@@ -330,9 +352,22 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
 
     @Override
     public void onApplicationConnectionFailed(int errorCode) {
-        onDeviceSelected(null);
-        for (DataCastConsumer consumer : mDataConsumers) {
-            consumer.onApplicationConnectionFailed(errorCode);
+        if (mReconnectionStatus == RECONNECTION_STATUS_IN_PROGRESS) {
+            if (errorCode == CastStatusCodes.APPLICATION_NOT_RUNNING) {
+                // while trying to re-establish session, we found out that the app is not running
+                // so we need to disconnect
+                mReconnectionStatus = RECONNECTION_STATUS_INACTIVE;
+                onDeviceSelected(null);
+            }
+        } else {
+            for (DataCastConsumer consumer : mDataConsumers) {
+                consumer.onApplicationConnectionFailed(errorCode);
+            }
+            onDeviceSelected(null);
+            if (mMediaRouter != null) {
+                LOGD(TAG, "onApplicationConnectionFailed(): Setting route to default");
+                mMediaRouter.selectRoute(mMediaRouter.getDefaultRoute());
+            }
         }
     }
 
@@ -369,6 +404,16 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
         for (DataCastConsumer consumer : mDataConsumers) {
             consumer.onApplicationStopFailed(errorCode);
         }
+    }
+
+    @Override
+    public void onConnectivityRecovered() {
+        try {
+            attachDataChannels();
+        } catch (IOException | IllegalStateException e) {
+            LOGE(TAG, "onConnectivityRecovered(): Failed to reattach data channels", e);
+        }
+        super.onConnectivityRecovered();
     }
 
     @Override
@@ -411,27 +456,6 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
         if (listener != null) {
             removeBaseCastConsumer(listener);
             mDataConsumers.remove(listener);
-        }
-    }
-
-    class CastListener extends Cast.Listener {
-
-        /*
-         * (non-Javadoc)
-         * @see com.google.android.gms.cast.Cast.Listener#onApplicationDisconnected (int)
-         */
-        @Override
-        public void onApplicationDisconnected(int statusCode) {
-            DataCastManager.this.onApplicationDisconnected(statusCode);
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see com.google.android.gms.cast.Cast.Listener#onApplicationStatusChanged ()
-         */
-        @Override
-        public void onApplicationStatusChanged() {
-            DataCastManager.this.onApplicationStatusChanged();
         }
     }
 

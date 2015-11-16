@@ -16,13 +16,13 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast;
 
-import android.support.v7.media.MediaRouter;
-import android.support.v7.media.MediaRouter.RouteInfo;
+import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGD;
 
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
 
-import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGD;
+import android.support.v7.media.MediaRouter;
+import android.support.v7.media.MediaRouter.RouteInfo;
 
 /**
  * Provides a handy implementation of {@link MediaRouter.Callback}. When a {@link RouteInfo} is
@@ -30,7 +30,7 @@ import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.
  * {@link BaseCastManager#setDevice(CastDevice))} of the listener that was passed to it in
  * the constructor. In addition, as soon as a non-default route is discovered, the
  * {@link BaseCastManager#onCastDeviceDetected(RouteInfo))} is called.
- * <p/>
+ * <p>
  * There is also some logic in this class to help with the process of previous session recovery.
  */
 public class CastMediaRouterCallback extends MediaRouter.Callback {
@@ -39,7 +39,7 @@ public class CastMediaRouterCallback extends MediaRouter.Callback {
     private boolean mRouteAvailable = false;
 
     public CastMediaRouterCallback(BaseCastManager castManager) {
-        this.mCastManager = castManager;
+        mCastManager = castManager;
     }
 
     @Override
@@ -108,8 +108,8 @@ public class CastMediaRouterCallback extends MediaRouter.Callback {
 
     private boolean isRouteAvailable(MediaRouter router) {
         return router.isRouteAvailable(mCastManager.getMediaRouteSelector(),
-                MediaRouter.AVAILABILITY_FLAG_IGNORE_DEFAULT_ROUTE
-                        | MediaRouter.AVAILABILITY_FLAG_REQUIRE_MATCH);
+            MediaRouter.AVAILABILITY_FLAG_IGNORE_DEFAULT_ROUTE
+                | MediaRouter.AVAILABILITY_FLAG_REQUIRE_MATCH);
     }
 
     /**

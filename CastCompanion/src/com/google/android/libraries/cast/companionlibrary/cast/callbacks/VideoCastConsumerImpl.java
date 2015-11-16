@@ -16,11 +16,11 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.callbacks;
 
-import android.view.View;
-
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.gms.cast.TextTrackStyle;
+
+import android.view.View;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +35,7 @@ public class VideoCastConsumerImpl extends BaseCastConsumerImpl
 
     @Override
     public void onApplicationConnected(ApplicationMetadata appMetadata,
-                                       String sessionId, boolean wasLaunched) {
+            String sessionId, boolean wasLaunched) {
     }
 
     @Override
@@ -96,7 +96,7 @@ public class VideoCastConsumerImpl extends BaseCastConsumerImpl
 
     @Override
     public void onMediaQueueUpdated(List<MediaQueueItem> queueItems, MediaQueueItem item,
-                                    int repeatMode, boolean shuffle) {
+            int repeatMode, boolean shuffle) {
     }
 
     @Override

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   Copyright 2015 Google Inc. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +16,20 @@
   -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- pressed -->
-    <item android:drawable="@drawable/ic_closed_caption_googblue_36dp" android:state_pressed="true" />
+    <item android:state_pressed="true"
+          android:drawable="@drawable/ic_closed_caption_googblue_36dp"/>
     <!-- focused -->
-    <item android:drawable="@drawable/ic_closed_caption_white_36dp" android:state_focused="true" />
+    <item android:state_focused="true"
+          android:drawable="@drawable/ic_closed_caption_white_36dp"/>
     <!-- hovered -->
-    <item android:drawable="@drawable/ic_closed_caption_white_36dp" android:state_hovered="true" />
+    <item android:state_hovered="true"
+          android:drawable="@drawable/ic_closed_caption_white_36dp"/>
     <!-- activated -->
-    <item android:drawable="@drawable/ic_closed_caption_white_36dp" android:state_enabled="true" />
+    <item android:state_enabled="true"
+          android:drawable="@drawable/ic_closed_caption_white_36dp"/>
     <!-- deactivated -->
-    <item android:drawable="@drawable/ic_closed_caption_grey600_36dp" android:state_enabled="false" />
+    <item android:state_enabled="false"
+          android:drawable="@drawable/ic_closed_caption_grey600_36dp"/>
     <!-- default -->
-    <item android:drawable="@drawable/ic_closed_caption_white_36dp" />
+    <item android:drawable="@drawable/ic_closed_caption_white_36dp"/>
 </selector>

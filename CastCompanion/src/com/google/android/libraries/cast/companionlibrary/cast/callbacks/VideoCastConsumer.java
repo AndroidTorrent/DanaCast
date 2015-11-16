@@ -16,13 +16,13 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.callbacks;
 
-import android.view.View;
-
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.gms.cast.TextTrackStyle;
+
+import android.view.View;
 
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +39,7 @@ public interface VideoCastConsumer extends BaseCastConsumer {
      * joined.
      */
     void onApplicationConnected(ApplicationMetadata appMetadata,
-                                String sessionId, boolean wasLaunched);
+            String sessionId, boolean wasLaunched);
 
     /**
      * Called when an application launch has failed. Failure reason is captured in the
@@ -90,7 +90,7 @@ public interface VideoCastConsumer extends BaseCastConsumer {
      * Called when there is an error sending a message.
      *
      * @param errorCode An error code indicating the reason for the disconnect. One of the error
-     *                  constants defined in CastErrors.
+     * constants defined in CastErrors.
      */
     void onDataMessageSendFailed(int errorCode);
 
@@ -103,7 +103,6 @@ public interface VideoCastConsumer extends BaseCastConsumer {
 
     /**
      * Called when the style of the text caption has changed
-     *
      * @param style The new style
      */
     void onTextTrackStyleChanged(TextTrackStyle style);
@@ -124,43 +123,59 @@ public interface VideoCastConsumer extends BaseCastConsumer {
      * request
      *
      * @param statusCode The status code that represents the success or failure of the request.
-     *                   The possible value are defined in
-     *                   {@link com.google.android.gms.common.api.CommonStatusCodes} or
-     *                   {@link com.google.android.gms.cast.CastStatusCodes}.
-     *                   {@link com.google.android.gms.cast.CastStatusCodes#SUCCESS} signifies a successful request.
+     * The possible value are defined in
+     * {@link com.google.android.gms.common.api.CommonStatusCodes} or
+     * {@link com.google.android.gms.cast.CastStatusCodes}.
+     * {@link com.google.android.gms.cast.CastStatusCodes#SUCCESS} signifies a successful request.
      */
     void onMediaLoadResult(int statusCode);
 
-
     /**
      * A callback to inform the clients that queue has been updated.
+     *
+     * @param queueItems The updated list of queue items
+     * @param item The item that was updated
+     * @param repeatMode The repeat mode of the updated item
+     * @param shuffle The shuffle status of the updated item
      */
     void onMediaQueueUpdated(List<MediaQueueItem> queueItems, MediaQueueItem item,
-                             int repeatMode, boolean shuffle);
+            int repeatMode, boolean shuffle);
 
     /**
      * A callback to inform the client that pre-loading of a queue item has started
      *
-     * @param item
+     * @param item The queue item that the receiver has started to preload (if supported)
      */
     void onRemoteMediaPreloadStatusUpdated(MediaQueueItem item);
 
-    void onUpcomingPlayClicked(View v, MediaQueueItem item);
+    /**
+     * A callback to inform the clients that the "Play" button for the upcoming item has been
+     * clicked,
+     *
+     * @param view The view that was clicked
+     * @param upcomingItem The queue item that represents the item that is being preloaded
+     */
+    void onUpcomingPlayClicked(View view, MediaQueueItem upcomingItem);
 
+    /**
+     * A callback to inform the clients that the "Stop" button for the upcoming item has been
+     * clicked.
+     *
+     * @param view The view that was clicked
+     * @param upcomingItem The queue item that represents the item that is being preloaded
+     */
     void onUpcomingStopClicked(View view, MediaQueueItem upcomingItem);
 
     /**
      * A callback to inform the client of the result of a queueing operation.
      *
      * @param operationId Identifier of the operation, see
-     *                    {@code VideoCastManager#QUEUE_OPERATION_*}
-     * @param statusCode  The status code that represents the success or failure of the request.
-     *                    The possible value are defined in
-     *                    {@link com.google.android.gms.common.api.CommonStatusCodes} or
-     *                    {@link com.google.android.gms.cast.CastStatusCodes}.
-     *                    {@link com.google.android.gms.cast.CastStatusCodes#SUCCESS} signifies a successful request.
+     * {@code VideoCastManager#QUEUE_OPERATION_*}
+     * @param statusCode The status code that represents the success or failure of the request.
+     * The possible value are defined in
+     * {@link com.google.android.gms.common.api.CommonStatusCodes} or
+     * {@link com.google.android.gms.cast.CastStatusCodes}.
+     * {@link com.google.android.gms.cast.CastStatusCodes#SUCCESS} signifies a successful request.
      */
     void onMediaQueueOperationResult(int operationId, int statusCode);
-
-
 }

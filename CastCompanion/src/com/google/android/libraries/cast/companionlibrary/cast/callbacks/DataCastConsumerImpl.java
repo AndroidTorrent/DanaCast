@@ -27,7 +27,7 @@ public class DataCastConsumerImpl extends BaseCastConsumerImpl implements DataCa
 
     @Override
     public void onApplicationConnected(ApplicationMetadata appMetadata, String applicationStatus,
-                                       String sessionId, boolean wasLaunched) {
+            String sessionId, boolean wasLaunched) {
     }
 
     @Override

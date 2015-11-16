@@ -16,17 +16,17 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.tracks;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.provider.Settings;
+import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
 
 import com.google.android.libraries.cast.companionlibrary.R;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
 import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 
-import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
+import android.content.Intent;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.provider.Settings;
 
 /**
  * An Activity to show the Captions Preferences for Android versions prior to KitKat

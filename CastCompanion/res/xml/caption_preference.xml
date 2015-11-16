@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   Copyright 2015 Google Inc. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +21,8 @@
     <PreferenceCategory android:title="@string/ccl_caption">
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="@string/ccl_key_caption_enabled"
-            android:title="@string/ccl_prefs_caption_enabled_title" />
+            android:title="@string/ccl_prefs_caption_enabled_title"
+            android:key="@string/ccl_key_caption_enabled"/>
         <ListPreference
             android:defaultValue="@string/ccl_prefs_caption_font_scale_value_default"
             android:dialogTitle="@string/ccl_prefs_caption_font_scale_title"

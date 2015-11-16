@@ -31,7 +31,7 @@ public interface DataCastConsumer extends BaseCastConsumer {
      * joined.
      */
     void onApplicationConnected(ApplicationMetadata appMetadata,
-                                String applicationStatus, String sessionId, boolean wasLaunched);
+            String applicationStatus, String sessionId, boolean wasLaunched);
 
     /**
      * Called when the current application has stopped
@@ -81,7 +81,7 @@ public interface DataCastConsumer extends BaseCastConsumer {
      * Called when this callback is removed from the Cast object.
      *
      * @param castDevice The castDevice from where the message originated.
-     * @param namespace  The associated namespace of the removed listener.
+     * @param namespace The associated namespace of the removed listener.
      */
     void onRemoved(CastDevice castDevice, String namespace);
 }

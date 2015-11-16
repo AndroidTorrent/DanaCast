@@ -42,7 +42,7 @@ public abstract class FetchBitmapTask extends AsyncTask<Uri, Void, Bitmap> {
     /**
      * Constructs a new FetchBitmapTask that will do scaling.
      *
-     * @param preferredWidth  The preferred image width.
+     * @param preferredWidth The preferred image width.
      * @param preferredHeight The preferred image height.
      */
     public FetchBitmapTask(int preferredWidth, int preferredHeight) {
@@ -100,7 +100,7 @@ public abstract class FetchBitmapTask extends AsyncTask<Uri, Void, Bitmap> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, uri);
         } else {
-            execute(new Uri[]{uri});
+            execute(new Uri[] {uri});
         }
     }
 

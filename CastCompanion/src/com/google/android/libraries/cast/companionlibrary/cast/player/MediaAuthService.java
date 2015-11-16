@@ -53,31 +53,31 @@ public interface MediaAuthService {
      * all the information required to perform the authorization task. This is where the dynamic
      * life cycle of this class starts.
      */
-    void startAuthorization();
+    public void startAuthorization();
 
     /**
      * Registers an {@link MediaAuthListener} listener to be notified when the authentication
      * service has obtained its result. To remove a previously set listener, pass a
      * <code>null</code> argument.
      */
-    void setMediaAuthListener(MediaAuthListener listener);
+    public void setMediaAuthListener(MediaAuthListener listener);
 
     /**
      * Returns the current {@link MediaInfo} object that is the subject of authorization. At a
      * minimum, it is expected to have images for the media at any stage.
      */
-    MediaInfo getMediaInfo();
+    public MediaInfo getMediaInfo();
 
     /**
      * In pending state, implementors can provide an optional localized message to be shown to the
      * user. If <code>null</code> is returned, no message will be shown to the user.
      */
-    String getPendingMessage();
+    public String getPendingMessage();
 
     /**
      * Returns the current status of the service.
      */
-    MediaAuthStatus getStatus();
+    public MediaAuthStatus getStatus();
 
     /**
      * Returns the length of time within which the library expects to have heard back from the
@@ -86,7 +86,7 @@ public interface MediaAuthService {
      *
      * @return Timeout in milliseconds
      */
-    long getTimeout();
+    public long getTimeout();
 
     /**
      * If authorization times out or user cancels the authorization process, this method will be
@@ -94,6 +94,6 @@ public interface MediaAuthService {
      *
      * @param abortReason One of the {@code MediaAuthStatus#ABORT_*} reasons
      */
-    void abortAuthorization(MediaAuthStatus abortReason);
+    public void abortAuthorization(MediaAuthStatus abortReason);
 
 }
