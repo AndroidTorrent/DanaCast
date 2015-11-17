@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     Constants.WRITE_EXTERNAL_STORAGE);
+        } else {
+            UpdateUtils.checkUpdates(this);
         }
 
         ContentUtils.removeLocalFiles("TorrentCache");
