@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 
 public class ContentUtils {
     private static final String[] dialogOptions = {"Chromecast", "Download", "Copy link to the clipboard", "Open in Browser", "Open with..."};
@@ -286,9 +287,10 @@ public class ContentUtils {
         query = query.replace(" ", "%20").split("-")[0];
         try {
             JSONObject response = new JSONObject(NetworkUtils.getURLOutput(
-                    "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&imgsz=xxlarge"));
+                    "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&imgsz=xxlarge&rsz=8"));
             JSONArray results = response.getJSONObject("responseData").getJSONArray("results");
-            return results.getJSONObject(0).getString("url");
+            Random random = new Random();
+            return results.getJSONObject(random.nextInt(results.length() - 1)).getString("url");
         } catch (JSONException e) {
             e.printStackTrace();
         }
